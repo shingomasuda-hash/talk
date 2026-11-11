@@ -49,5 +49,20 @@ ${safe(app)}
 </script>
 `;
 fs.mkdirSync(path.join(root, "dist"), { recursive: true });
+// Artifact 用（公開時に <!doctype html> 等の骨組みが付く）
 fs.writeFileSync(path.join(root, "dist/script-ai-demo.html"), out);
+// Vercel 等の静的ホスティング用（完全なHTML文書）
+const page = `<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+${out.slice(0, out.indexOf("<style>"))}<style>${css}</style>
+</head>
+<body>
+${out.slice(out.indexOf("</style>") + "</style>".length)}
+</body>
+</html>
+`;
+fs.writeFileSync(path.join(root, "dist/index.html"), page);
 console.log(`dist/script-ai-demo.html を作成しました（${(out.length / 1024).toFixed(0)} KB）`);

@@ -65,7 +65,13 @@ npx tsx scripts/demo-print.ts A
 npm run build:demo
 ```
 
-`dist/script-ai-demo.html` ができます。サーバー版と同じサービス層・ルート表（`src/routes.ts`）をブラウザ内で動かしています（`src/browser/demo.ts`）。
+`dist/index.html`（静的ホスティング用）と `dist/script-ai-demo.html`（Claude Artifact 用）ができます。
+
+### Vercel で公開する場合
+
+`vercel.json` で、Vercel にはこの公開デモ（静的ページ）だけを配信させています（`npm run build:demo` → `dist/`）。
+Express のサーバー版は Vercel では動かしません。サーバー版はデータを `data/db.json` に保存するため、ファイルを保持できない Vercel のサーバー関数では案件・スクリプトが消えてしまうからです。
+AI 生成を Web で使うには、データベース（例：Vercel Postgres／KV）への保存とAPIキーの設定が別途必要です。サーバー版と同じサービス層・ルート表（`src/routes.ts`）をブラウザ内で動かしています（`src/browser/demo.ts`）。
 
 ## テスト
 
