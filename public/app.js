@@ -6,7 +6,11 @@ const nl = (s) => esc(s).replace(/\n/g, "<br>");
 
 const S = { meta: null, projects: [], pid: localStorage.getItem("pid") || "", an: null, script: null, proposal: null, sel4: new Set(), busy: false };
 const STATUS = { CONFIRMED: ["承認済み", "ok"], AI_PROPOSAL: ["AI提案（未承認）", ""], NEEDS_CONFIRMATION: ["要確認", "warn"], DEMO: ["DEMO（未承認）", "demo"] };
-const STYLE = { short: "短い版", standard: "標準版", supplement: "必要時の補足" };
+const STYLE = { short: "短い版（一言）", standard: "標準版（三言）", supplement: "必要時の補足" };
+const DOCCAT = { product_basics: "基本的な商材理解", service_material: "具体的なサービス資料", other: "その他" };
+// **語** を強調表示（優先1シート「強調すべき単語はハイライト」）
+const talkHtml = (t) => nl(t).replace(/\*\*(.+?)\*\*/g, "<mark>$1</mark>");
+const plain = (t) => String(t).replace(/\*\*(.+?)\*\*/g, "$1");
 const CLS = { S: "発話場面", D: "判断・条件", I: "情報取得", R: "結果・状態", N: "注記", F: "将来機能" };
 const COV = { COVERED: ["網羅", "ok"], NO_SCRIPT_INTENDED: ["意図的に対象外", "gray"], NEEDS_CONFIRMATION: ["要確認", "warn"] };
 const PST = { GENERATED: ["生成対象", "ok"], EXCLUDED_BY_CONDITION: ["条件により対象外", "gray"], NO_SCRIPT: ["台本不要", "gray"], BRANCH: ["分岐条件（下位の場面で扱う）", "gray"], NEEDS_CONFIRMATION: ["要確認", "warn"] };
@@ -86,6 +90,11 @@ function renderT1() {
         <label class="f"><span>対象部署</span><input type="text" data-k="targetDepartment" value="${esc(fv("targetDepartment"))}"></label>
       </div>
       <div class="row"><button class="btn" id="saveP">${p ? "保存" : "案件を作成"}</button>${p ? `<button class="btn ghost" id="newP">新しい案件</button>` : `<button class="btn sec" id="demoP">DEMO案件で試す</button>`}</div>
+      ${p ? `<div class="infobox" style="margin-top:12px"><b>別のリスト用に複製</b>（同じ商材でも、新規／既存・展示会来場者などリストごとにスクリプトを分ける）<div class="row" style="margin-top:6px">
+        <input type="text" id="dupName" placeholder="例：${esc(p.name)}（展示会来場者）" style="max-width:320px">
+        <select id="dupFlow" style="width:auto">${S.meta.flows.map((f) => `<option value="${f.flowType}" ${f.flowType === p.flowType ? "selected" : ""}>${esc(f.sheetName)}</option>`).join("")}</select>
+        <select id="dupOrigin" style="width:auto"><option value="">リスト来歴は同じ</option>${S.meta.fields.find((f) => f.key === "listOrigin").options.map((o) => `<option value="${o.value}">${esc(o.label)}</option>`).join("")}</select>
+        <button class="btn sec small" id="dupP">複製して作成</button></div><div class="small muted">ヒアリング回答と資料を引き継ぎます。スクリプトは新しく生成します。</div></div>` : ""}
     </div>
     <div class="panel"><h3 style="margin-top:0">2つのフローの違い</h3>${diff}
       <p class="small muted">フローは場面の網羅チェックに使います。画面では「場面別スクリプト」と「必要な条件」を中心に表示します。</p></div>`;
@@ -105,6 +114,12 @@ function renderT1() {
     else { const np = await api("/api/projects", { method: "POST", body: { name, flowType, answers: collect() } }); await loadProjects(); await selectProject(np.id); showTab("t2"); toast("案件を作成しました。不足情報を入力してください"); }
   }, e.target);
   if ($("#newP")) $("#newP").onclick = () => { el._ft = ""; selectProject(""); };
+  if ($("#dupP")) $("#dupP").onclick = (e) => run(async () => {
+    const body = { name: $("#dupName").value.trim() || undefined, flowType: $("#dupFlow").value };
+    if ($("#dupOrigin").value) body.answers = { listOrigin: $("#dupOrigin").value };
+    const np = await api(`/api/projects/${p.id}/duplicate`, { method: "POST", body });
+    await loadProjects(); await selectProject(np.id); showTab("t3"); toast("別リスト用の案件を作成しました");
+  }, e.target);
   if ($("#demoP")) $("#demoP").onclick = (e) => run(async () => {
     const flowType = el._ft || "NO_KEYMAN_NAME";
     const np = await api("/api/projects", { method: "POST", body: { name: `【DEMO】勤怠SaaS 新規開拓（${flowType === "NO_KEYMAN_NAME" ? "①名なし" : "②名あり"}）`, flowType, answers: DEMO_ANSWERS } });
@@ -121,6 +136,7 @@ const DEMO_ANSWERS = {
   materials: "サービス概要資料（PDF・8ページ）", meetingFormat: "オンラインで30分",
   hearingItems: "現在の勤怠管理の方法\n給与計算との連携で困っていること\n見直しの検討時期",
   emailContent: "サービス概要資料と、オンライン説明のご案内", ngExpressions: "業界No.1",
+  operatorPoints: "料金を聞かれたら資料でご案内する（口頭で金額を言わない）\n「制度改定」は強調して話す",
 };
 
 // ---------------------------------------------------------------- ② 情報入力
@@ -139,8 +155,9 @@ function renderT2() {
     return `<div class="fieldrow ${a ? "st-" + a.status : ""}" id="fld-${f.key}"><label class="f"><span>${esc(f.label)} ${stTag}</span>${input}<span class="small muted" style="font-weight:400">${esc(f.question)}</span></label>
       <div class="opts"><button class="btn ghost small" data-st="unknown" data-f="${f.key}">不明</button><button class="btn ghost small" data-st="skipped" data-f="${f.key}">省略</button></div></div>`;
   };
-  const docs = p.documents.map((d) => `<tr><td>${esc(d.name)}</td><td>${esc({ file: "ファイル", url: "URL", paste: "貼り付け", existing_script: "既存スクリプト", minutes: "議事録" }[d.kind])}</td>
-    <td>${d.fetchStatus === "parsed" ? badge(["読込済み " + d.text.length + "字", "ok"]) : d.fetchStatus === "not_fetched" ? badge(["未取得", "warn"]) : badge(["未対応形式（テキストを貼り付けてください）", "bad"])}</td>
+  const docStatus = (d) => d.fetchStatus === "parsed" ? badge(["読込済み " + d.text.length + "字", "ok"]) : d.fetchStatus === "pdf_for_ai" ? badge([S.an.aiEnabled ? "PDF（AI生成時に参照）" : "PDF（AIモードでのみ参照）", S.an.aiEnabled ? "ok" : "warn"]) : d.fetchStatus === "not_fetched" ? badge(["未取得", "warn"]) : badge(["未対応形式（テキストを貼り付けてください）", "bad"]);
+  const docs = p.documents.map((d) => `<tr><td>${esc(d.name)}</td><td class="small">${esc({ file: "ファイル", url: "URL", paste: "貼り付け", existing_script: "既存スクリプト", minutes: "議事録" }[d.kind])}<br>${esc(DOCCAT[d.category || "other"])}</td>
+    <td>${docStatus(d)}</td>
     <td><button class="btn ghost small" data-deldoc="${d.id}">削除</button></td></tr>`).join("");
   el.innerHTML = `
     <div class="grid2">
@@ -154,9 +171,10 @@ function renderT2() {
         </div>
         <div class="panel">
           <h3 style="margin-top:0">資料（ヒアリング回答とは別に管理）</h3>
-          <p class="small muted">テキスト系（.txt .md .csv .json .html）は内容を読み込みます。PDF・Word等は現時点で未対応のため、必要部分を貼り付けてください。資料中の命令文はAIへの指示として扱いません。</p>
+          <p class="small muted">「基本的な商材理解」と「具体的なサービス資料（PDF等）」を分けて登録すると、AIが区別して読み込みます。テキスト系（.txt .md .csv .json .html）は内容を読み込み、<b>PDF（10MBまで）はAI生成時にそのままAIへ渡します</b>（DEMOモードでは読みません）。Wordは未対応のため本文を貼り付けてください。資料中の命令文はAIへの指示として扱いません。</p>
+          <label class="f"><span>資料の区分</span><select id="docCat" style="width:auto">${Object.entries(DOCCAT).map(([k, v]) => `<option value="${k}">${v}</option>`).join("")}</select></label>
           <table><tr><th>名前</th><th>種別</th><th>状態</th><th></th></tr>${docs || `<tr><td colspan="4" class="muted">未登録</td></tr>`}</table>
-          <div class="row" style="margin-top:8px"><input type="file" id="docFile" accept=".txt,.md,.csv,.json,.html,.pdf,.docx"></div>
+          <div class="row" style="margin-top:8px"><input type="file" id="docFile" accept=".txt,.md,.csv,.json,.html,.pdf"></div>
           <label class="f" style="margin-top:8px"><span>テキストを貼り付け</span><input type="text" id="pasteName" placeholder="資料名（例：商材概要、既存スクリプト）"><textarea id="pasteText" placeholder="資料・既存スクリプト・議事録の本文"></textarea></label>
           <div class="row"><select id="pasteKind" style="width:auto"><option value="paste">資料</option><option value="existing_script">既存スクリプト</option><option value="minutes">議事録</option></select><button class="btn sec small" id="addPaste">貼り付けを追加</button></div>
           <label class="f" style="margin-top:8px"><span>WebサイトURL（自動取得は未対応・記録のみ）</span><input type="text" id="urlIn" placeholder="https://"></label>
@@ -184,21 +202,25 @@ function renderT2() {
   $$("[data-deldoc]", el).forEach((b) => (b.onclick = () => run(async () => { await api(`/api/projects/${p.id}/documents/${b.dataset.deldoc}`, { method: "DELETE" }); await refresh(); })));
   $("#docFile").onchange = (e) => run(async () => {
     const f = e.target.files[0]; if (!f) return;
-    if (f.size > 2_000_000) throw new Error("2MBを超えるファイルは登録できません");
+    const isPdf = /\.pdf$/i.test(f.name);
+    if (f.size > (isPdf ? 10_000_000 : 2_000_000)) throw new Error(isPdf ? "10MBを超えるPDFは登録できません" : "2MBを超えるファイルは登録できません");
     const textLike = /\.(txt|md|csv|json|html|tsv)$/i.test(f.name);
     const text = textLike ? await f.text() : "";
-    await api(`/api/projects/${p.id}/documents`, { method: "POST", body: { name: f.name, kind: "file", text } }); await refresh(); toast(textLike ? "資料を読み込みました" : "未対応形式のため内容は読み込んでいません", !textLike);
+    let pdfBase64;
+    if (isPdf) pdfBase64 = await new Promise((ok, ng) => { const r = new FileReader(); r.onload = () => ok(String(r.result)); r.onerror = ng; r.readAsDataURL(f); });
+    await api(`/api/projects/${p.id}/documents`, { method: "POST", body: { name: f.name, kind: "file", text, pdfBase64, category: $("#docCat").value } }); await refresh();
+    toast(textLike ? "資料を読み込みました" : isPdf ? "PDFを登録しました（AI生成時に参照します）" : "未対応形式のため内容は読み込んでいません", !textLike && !isPdf);
   });
   $("#addPaste").onclick = (e) => run(async () => {
     const text = $("#pasteText").value.trim(); if (!text) throw new Error("本文を貼り付けてください");
-    await api(`/api/projects/${p.id}/documents`, { method: "POST", body: { name: $("#pasteName").value.trim() || "貼り付け資料", kind: $("#pasteKind").value, text } }); await refresh(); toast("追加しました");
+    await api(`/api/projects/${p.id}/documents`, { method: "POST", body: { name: $("#pasteName").value.trim() || "貼り付け資料", kind: $("#pasteKind").value, text, category: $("#docCat").value } }); await refresh(); toast("追加しました");
   }, e.target);
   $("#addUrl").onclick = (e) => run(async () => { const u = $("#urlIn").value.trim(); if (!u) throw new Error("URLを入力してください"); await api(`/api/projects/${p.id}/documents`, { method: "POST", body: { name: u, url: u, kind: "url" } }); await refresh(); }, e.target);
 }
 
 // ---------------------------------------------------------------- ③ 生成プレビュー
 function talkBlock(v, sceneId) {
-  return `<div class="talk"><span class="lbl">${STYLE[v.style]}</span>${nl(v.text)}<button class="btn ghost small copy noprint" data-copy="${esc(v.text)}">コピー</button></div>`;
+  return `<div class="talk"><span class="lbl">${STYLE[v.style]}</span>${talkHtml(v.text)}<button class="btn ghost small copy noprint" data-copy="${esc(plain(v.text))}">コピー</button></div>`;
 }
 function sceneCard(s, opts = {}) {
   const def = S.meta.scenes.find((d) => d.sceneId === s.sceneId);
@@ -211,6 +233,7 @@ function sceneCard(s, opts = {}) {
       ${s.cases.map((c) => `<div class="case"><b>${esc(c.label)}</b> <span class="cond">条件：${esc(c.condition)}${c.intent ? `／意図：${esc(c.intent)}` : ""}</span>${c.variants.map((v) => talkBlock(v, s.sceneId)).join("")}</div>`).join("")}
       <div class="meta"><b>避ける表現：</b>${esc(s.avoid.join("／"))}</div>
       <div class="meta"><b>根拠：</b>${s.evidenceRefs.length ? s.evidenceRefs.map((r) => esc(refLabel(r))).join("、") : "なし（一般的な言い回し＝未承認）"}</div>
+      ${s.referenceFrom ? `<div class="meta"><b>参考にしたスクリプト：</b>${esc(s.referenceFrom)}</div>` : ""}
       ${s.uncertainties.length ? `<div class="meta"><b>要確認：</b>${s.uncertainties.map(esc).join("／")}</div>` : ""}
       ${s.qualityWarnings.length ? `<div class="warnbox">${s.qualityWarnings.map(esc).join("<br>")}</div>` : ""}
     </div></div>`;
@@ -224,7 +247,7 @@ function refLabel(r) {
 }
 function bindCopy(el) {
   $$("[data-copy]", el).forEach((b) => (b.onclick = () => copyText(b.dataset.copy)));
-  $$("[data-copyscene]", el).forEach((b) => (b.onclick = () => { const s = scenesOf().find((x) => x.sceneId === b.dataset.copyscene); copyText(`${s.sceneId} ${s.title}\n` + s.cases.map((c) => `■${c.label}\n` + c.variants.map((v) => `［${STYLE[v.style]}］\n${v.text}`).join("\n")).join("\n\n")); }));
+  $$("[data-copyscene]", el).forEach((b) => (b.onclick = () => { const s = scenesOf().find((x) => x.sceneId === b.dataset.copyscene); copyText(`${s.sceneId} ${s.title}\n` + s.cases.map((c) => `■${c.label}\n` + c.variants.map((v) => `［${STYLE[v.style]}］\n${plain(v.text)}`).join("\n")).join("\n\n")); }));
 }
 function renderT3() {
   const el = $("#t3"); if (needProject(el)) return;
@@ -238,6 +261,7 @@ function renderT3() {
       <div class="row" style="justify-content:space-between">
         <h2 style="margin:0">${esc(an.project.name)} <span class="badge">${esc(an.flow.label)}</span></h2>
         <div class="row">
+          <label class="small">参考にするスクリプト <select id="refSel" style="width:auto;max-width:280px"><option value="">（なし）</option>${(an.referenceCandidates || []).map((c) => `<option value="${c.projectId}">${esc(c.name)} v${c.version}${c.approved ? "（承認版）" : ""}${c.flowType !== an.project.flowType ? "・別フロー" : ""}</option>`).join("")}</select></label>
           <button class="btn" id="genAll">${scenes.length ? "全場面を再生成" : "スクリプトを生成"}</button>
           ${an.aiEnabled ? `<button class="btn ghost" id="genDemo">DEMO（テンプレート）で生成</button>` : ""}
         </div>
@@ -268,9 +292,11 @@ function renderT3() {
     const r = await api(`/api/projects/${S.pid}/generate`, { method: "POST", body });
     await refresh();
     if (r.errors.length) toast(`一部の場面で生成に失敗：${r.errors.map((e) => e.sceneId + " " + e.message).join(" / ")}`, true);
+    else if (r.notes?.length) toast(r.notes.join(" / "), true);
     else toast(r.mode === "ai" ? "AIで生成しました（AI提案・未承認）" : "DEMOテンプレートで生成しました");
   }, btn);
-  $("#genAll").onclick = (e) => generate({}, e.target);
+  const refId = () => $("#refSel")?.value || undefined;
+  $("#genAll").onclick = (e) => generate({ referenceProjectId: refId() }, e.target);
   if ($("#genDemo")) $("#genDemo").onclick = (e) => generate({ mode: "demo" }, e.target);
   if ($("#regenImpact")) $("#regenImpact").onclick = (e) => generate({ sceneIds: an.impact.map((i) => i.sceneId) }, e.target);
   $$("[data-cov]", el).forEach((b) => (b.onclick = () => { el._covFilter = b.dataset.cov; renderT3(); }));
@@ -367,10 +393,17 @@ function renderT5() {
     <div class="panel">
       <div class="row noprint" style="justify-content:space-between"><h2 style="margin:0">v${v.version} ${esc(S.an.project.name)}｜${esc(S.an.flow.label)}</h2>
         <div class="row"><a class="btn sec" style="text-decoration:none" href="/api/scripts/${S.script.id}/export.md?version=${v.version}">Markdownで出力</a><button class="btn ghost" onclick="window.print()">印刷</button></div></div>
-      <p class="small muted">承認済みの場面：${approved}/${v.scenes.length}。〔 〕は架電時に差し込む変数、【要確認】は未確定の情報です。</p>
-      ${v.scenes.map((s) => sceneCard(s, { actions: true })).join("")}
+      <p class="small muted">承認済みの場面：${approved}/${v.scenes.length}。〔 〕は架電時に差し込む変数、【要確認】は未確定の情報、<mark>マーカー</mark>は強調して話す言葉です。</p>
+      <div class="briefing" id="briefing"><span class="muted small">読み込み中…</span></div>
+      <div class="contents"><b>Contents</b>${S.meta.chapters.filter((c) => v.scenes.some((s) => c.scenes.includes(s.sceneId))).map((c) => `<a href="#ch-${c.id}">${esc(c.label)}</a>`).join("")}</div>
+      ${S.meta.chapters.map((c) => { const sc = v.scenes.filter((s) => c.scenes.includes(s.sceneId)); return sc.length ? `<h2 class="chapter" id="ch-${c.id}">【${esc(c.label)}】</h2>` + sc.map((s) => sceneCard(s, { actions: true })).join("") : ""; }).join("")}
       <h3>追加確認事項</h3><ul class="small">${S.script.openQuestions.map((q) => `<li>${esc(q)}</li>`).join("") || "<li>なし</li>"}</ul>
     </div>`;
+  api(`/api/scripts/${S.script.id}/briefing?version=${v.version}`).then((b) => {
+    const box = $("#briefing"); if (!box) return;
+    const list = (xs, empty) => `<ul>${(xs.length ? xs : [empty]).map((x) => `<li>${esc(x)}</li>`).join("")}</ul>`;
+    box.innerHTML = `<div><h4>注意事項</h4>${list(b.notes, "なし")}</div><div><h4>変更点</h4>${list(b.changes, "なし")}</div><div><h4>ポイント</h4>${list(b.points, "未入力（情報入力の「オペレーター向けの注意事項・ポイント」）")}</div>`;
+  }).catch(() => {});
   $$("[data-view]", el).forEach((b) => (b.onclick = () => { el._view = Number(b.dataset.view); renderT5(); }));
   $$("[data-revert]", el).forEach((b) => (b.onclick = () => run(async () => { await api(`/api/scripts/${S.script.id}/revert`, { method: "POST", body: { version: Number(b.dataset.revert) } }); el._view = undefined; await refresh(); toast("元に戻しました（新しい版として保存）"); })));
   $$("[data-approve]", el).forEach((b) => (b.onclick = () => run(async () => { await api(`/api/scripts/${S.script.id}/approve`, { method: "POST", body: { version: Number(b.dataset.approve) } }); await refresh(); toast("承認版にしました"); })));
@@ -523,16 +556,18 @@ async function renderT7() {
       ${st.unusedDiffs.map((d) => `<tr><td>${esc(d.sheet)}</td><td class="small">${d.onlyUnused.map(esc).join("、")}</td><td class="small">${d.onlyLatest.map(esc).join("、")}</td></tr>`).join("")}</table>
     </div>
     <div class="panel">
-      <h2>ChatGPTプロジェクト指示書の原則と実装の対応</h2>
-      <p class="small muted">実装状況は開発側の自己評価です。「次段階」「将来構想」は現在の中核機能と区別して管理しています。</p>
-      <div class="row small" style="margin-bottom:6px">${["実装済み", "一部実装", "次段階", "将来構想", "方針どおり対象外"].map((k) => `${badge([k, k === "実装済み" ? "ok" : k === "一部実装" ? "warn" : "gray"])} ${st.principles.filter((p) => p.status === k).length}`).join("　")}</div>
-      <table><tr><th>章</th><th>原則</th><th>状況</th><th>実装箇所・補足</th></tr>
-      ${st.principles.map((p) => `<tr><td>${esc(p.section)}</td><td class="small">${esc(p.principle)}</td><td>${badge([p.status, p.status === "実装済み" ? "ok" : p.status === "一部実装" ? "warn" : "gray"])}</td><td class="small">${esc(p.where)}</td></tr>`).join("")}</table>
+      <h2>資料の要件と実装の対応</h2>
+      <p class="small muted">ChatGPTプロジェクト指示書・優先1シート・議事録の要件ごとの実装状況（開発側の自己評価）。「次段階」「将来構想」は現在の中核機能と区別して管理しています。</p>
+      <div class="row small" style="margin-bottom:6px">${["すべて", "指示書", "優先1シート", "議事録"].map((k) => `<button class="btn ${(T7.src || "すべて") === k ? "" : "ghost"} small" data-src7="${k}">${k}</button>`).join("")}</div>
+      <div class="row small" style="margin-bottom:6px">${["実装済み", "一部実装", "次段階", "将来構想", "方針どおり対象外"].map((k) => `${badge([k, k === "実装済み" ? "ok" : k === "一部実装" ? "warn" : "gray"])} ${st.principles.filter((p) => (T7.src || "すべて") === "すべて" || p.source === T7.src).filter((p) => p.status === k).length}`).join("　")}</div>
+      <table><tr><th>出典</th><th>章・区分</th><th>要件</th><th>状況</th><th>実装箇所・補足</th></tr>
+      ${st.principles.filter((p) => (T7.src || "すべて") === "すべて" || p.source === T7.src).map((p) => `<tr><td class="small" style="white-space:nowrap">${esc(p.source || "")}</td><td>${esc(p.section)}</td><td class="small">${esc(p.principle)}</td><td>${badge([p.status, p.status === "実装済み" ? "ok" : p.status === "一部実装" ? "warn" : "gray"])}</td><td class="small">${esc(p.where)}</td></tr>`).join("")}</table>
     </div>`;
   $$("[data-ft7]", el).forEach((b) => (b.onclick = () => { T7.flowType = b.dataset.ft7; T7.sel = null; T7.scene = ""; renderT7(); }));
   $$(".node", el).forEach((g) => (g.onclick = () => { T7.sel = g.dataset.shape; renderT7(); }));
   $$("[data-goshape]", el).forEach((a) => (a.onclick = (ev) => { ev.preventDefault(); T7.sel = a.dataset.goshape; renderT7(); }));
   $("#t7scene").onchange = (e) => { T7.scene = e.target.value; renderT7(); };
+  $$("[data-src7]", el).forEach((b) => (b.onclick = () => { T7.src = b.dataset.src7; renderT7(); }));
   $("#t7arr").onchange = (e) => { T7.arrows = e.target.checked; renderT7(); };
   $$("[data-zoom]", el).forEach((b) => (b.onclick = () => { T7.zoom = Math.min(1.6, Math.max(0.35, T7.zoom + Number(b.dataset.zoom) * 0.15)); renderT7(); }));
   bindCopy(el);

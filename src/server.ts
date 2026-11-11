@@ -3,7 +3,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import Anthropic from "@anthropic-ai/sdk";
 import { FLOWS, FLOW_DIFFERENCES, FLOW_LABEL, type FlowType } from "./domain/flowModel.js";
-import { FIELDS, SCENES } from "./domain/scenes.js";
+import { CHAPTERS, FIELDS, SCENES } from "./domain/scenes.js";
 import { coverageFor } from "./domain/selection.js";
 import { Store } from "./store.js";
 import { ClaudeScriptAi, MODEL, AiOutputError, AiUnavailableError, type ScriptAi } from "./ai/claude.js";
@@ -20,7 +20,7 @@ const LAYOUT = JSON.parse(fs.readFileSync(path.join(__dirname, "..", "source", "
 
 export function createApp(service: Service) {
   const app = express();
-  app.use(express.json({ limit: "3mb" }));
+  app.use(express.json({ limit: "16mb" }));
 
   // 最小限の認証（APP_PASSWORD を設定した場合のみ Basic 認証）
   const pw = process.env.APP_PASSWORD;
@@ -48,6 +48,7 @@ export function createApp(service: Service) {
     flows: Object.values(FLOWS).map((f) => ({ flowType: f.flowType, sheetName: f.sheetName, shortName: f.shortName, description: f.description, nodeCount: f.nodes.length, edgeCount: f.edges.length })),
     differences: FLOW_DIFFERENCES,
     scenes: SCENES,
+    chapters: CHAPTERS,
     fields: FIELDS,
   })));
   app.get("/api/flows/:flowType", h((req) => {
@@ -62,6 +63,7 @@ export function createApp(service: Service) {
   app.post("/api/projects", h((req) => service.createProject(req.body)));
   app.get("/api/projects/:id", h((req) => service.analysis(req.params.id)));
   app.put("/api/projects/:id", h((req) => service.updateProject(req.params.id, req.body)));
+  app.post("/api/projects/:id/duplicate", h((req) => service.duplicateProject(req.params.id, req.body ?? {})));
   app.post("/api/projects/:id/documents", h((req) => service.addDocument(req.params.id, req.body)));
   app.delete("/api/projects/:id/documents/:docId", h((req) => service.removeDocument(req.params.id, req.params.docId)));
   app.post("/api/projects/:id/generate", h((req) => service.generate(req.params.id, req.body ?? {})));
@@ -74,6 +76,7 @@ export function createApp(service: Service) {
   app.post("/api/scripts/:id/scenes/:sceneId/status", h((req) => service.setSceneStatus(req.params.id, req.params.sceneId, req.body.status)));
   app.post("/api/scripts/:id/revert", h((req) => service.revert(req.params.id, Number(req.body.version))));
   app.post("/api/scripts/:id/approve", h((req) => service.approveVersion(req.params.id, Number(req.body.version))));
+  app.get("/api/scripts/:id/briefing", h((req) => service.briefing(req.params.id, req.query.version ? Number(req.query.version) : undefined)));
   app.get("/api/scripts/:id/compare", h((req) => service.compareVersions(req.params.id, Number(req.query.a), Number(req.query.b))));
   app.get("/api/scripts/:id/export.md", (req, res, next) => {
     try {

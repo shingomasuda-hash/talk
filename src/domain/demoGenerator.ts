@@ -34,6 +34,12 @@ export function demoScene(p: Project, scene: SceneDefinition): ScriptScene {
   const dept = () => val("targetDepartment");
   // 「〜の件で」に入る話題。電話の理由（文章）は S11 等で別の文として使う
   const reasonShort = () => `${product()}のご案内`;
+  /** 優先1シートの例文構成（名乗り→電話した理由→問いかけ）の「電話した理由」部分 */
+  const reasonCall = () => {
+    const r = opt("callReason");
+    if (!r) return `本日は${reasonShort()}の件でお電話いたしました。`;
+    return `${firstSentence(r).replace(/(ため|ので|から)$/, "")}ため、${reasonShort()}でお電話させていただきました。`;
+  };
   /** 商材概要を「〜というサービス」の形に整える（末尾の「です」の重複を避ける） */
   const summaryNoun = () => {
     const s = opt("productSummary");
@@ -80,12 +86,12 @@ export function demoScene(p: Project, scene: SceneDefinition): ScriptScene {
       direct: () => ({
         intent: "本人確認・名乗り・主旨を短く伝え、話してよいか許可を取る",
         short: `${p.flowType === "HAS_KEYMAN_NAME" ? "〔キーマン氏名〕様でいらっしゃいますか。" : `${dept()}のご担当者様でいらっしゃいますか。`}\n${company()}の〔オペレーター名〕と申します。${reasonShort()}の件で、1分ほどよろしいでしょうか。`,
-        standard: `${p.flowType === "HAS_KEYMAN_NAME" ? "〔キーマン氏名〕様でいらっしゃいますか。" : `${dept()}のご担当者様でいらっしゃいますか。`}\n突然のお電話失礼いたします。${company()}の〔オペレーター名〕と申します。\n${contactLine() ? contactLine() + "\n" : ""}本日は${reasonShort()}の件でお電話いたしました。\n今、1分ほどお時間よろしいでしょうか。`,
+        standard: `${p.flowType === "HAS_KEYMAN_NAME" ? "〔キーマン氏名〕様でいらっしゃいますか。" : `${dept()}のご担当者様でいらっしゃいますか。`}\n突然のお電話失礼いたします。${company()}の〔オペレーター名〕と申します。\n${contactLine() ? contactLine() + "\n" : ""}${reasonCall()}\n今、1分ほどお時間よろしいでしょうか。`,
       }),
       transferred: () => ({
         intent: "取り次いでもらったお礼と名乗り、話してよいかの確認",
         short: `お電話代わっていただきありがとうございます。${company()}の〔オペレーター名〕と申します。\n${reasonShort()}の件で、1分ほどよろしいでしょうか。`,
-        standard: `お忙しいところお電話代わっていただき、ありがとうございます。\n${company()}の〔オペレーター名〕と申します。\n${contactLine() ? contactLine() + "\n" : ""}本日は${reasonShort()}の件でお電話いたしました。今、少しだけお時間よろしいでしょうか。`,
+        standard: `お忙しいところお電話代わっていただき、ありがとうございます。\n${company()}の〔オペレーター名〕と申します。\n${contactLine() ? contactLine() + "\n" : ""}${reasonCall()}\n今、少しだけお時間よろしいでしょうか。`,
       }),
     },
     S04: {
@@ -221,7 +227,7 @@ export function demoScene(p: Project, scene: SceneDefinition): ScriptScene {
         return {
           intent: "電話の主旨と相手にとっての価値を、資料にある事実で簡潔に伝える",
           short: `${summaryNoun()}です。\n${vp ? `特に、${firstSentence(vp)}。その点でお役に立てるかと思い、ご連絡しました。` : "【要確認：相手にとっての価値】"}`,
-          standard: `ありがとうございます。手短にお伝えします。\n弊社の${product()}は、${summaryNoun()}です。\n${vp ? vp.replace(/\n+/g, "。").replace(/。。/g, "。") : "【要確認：相手にとっての価値】"}\n${opt("callReason") ? `今回は、${firstSentence(opt("callReason")).replace(/(ため|ので|から)$/, "")}ため、ご連絡いたしました。` : ""}`.trim(),
+          standard: `ありがとうございます。手短にお伝えします。\n弊社の**${product()}**は、${summaryNoun()}です。\n${vp ? vp.replace(/\n+/g, "。").replace(/。。/g, "。") : "【要確認：相手にとっての価値】"}\n${opt("callReason") ? `今回は、${firstSentence(opt("callReason")).replace(/(ため|ので|から)$/, "")}ため、ご連絡いたしました。` : ""}`.trim(),
           supplement: ev ? `（根拠を聞かれたら）\n${ev}` : undefined,
         };
       },

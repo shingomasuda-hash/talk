@@ -87,3 +87,12 @@ th { background: #f2f4f7; font-weight: 600; position: sticky; top: 0; }
 .legend span { display: inline-flex; align-items: center; gap: 4px; margin-right: 10px; font-size: 12px; }
 .legend i { width: 14px; height: 12px; border: 1px solid #5b6576; display: inline-block; border-radius: 2px; }
 .detail .talk { font-size: 13px; }
+
+/* 強調・完成版の冒頭・目次 */
+mark { background: #fff1a8; color: inherit; padding: 0 2px; border-radius: 2px; font-weight: 700; }
+.briefing { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; border: 2px solid #f3d9a8; background: var(--warn-weak); border-radius: 8px; padding: 8px 12px; margin: 8px 0 12px; }
+.briefing h4 { margin: 2px 0 4px; } .briefing ul { margin: 0; padding-left: 18px; font-size: 13px; }
+@media (max-width: 900px) { .briefing { grid-template-columns: 1fr; } }
+.contents { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; padding: 6px 0 4px; font-size: 13px; }
+.chapter { border-left: 5px solid var(--accent); padding-left: 10px; margin: 18px 0 10px; font-size: 16px; }
+@media print { mark { background: none; text-decoration: underline; } }

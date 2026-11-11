@@ -110,6 +110,10 @@ export function qualityWarnings(p: Project, scene: ScriptScene): string[] {
       const longLine = t.split("\n").find((l) => l.length > 90);
       if (longLine) w.push(`［${where}］1文が長すぎます（${longLine.length}字）。読み上げやすく区切ってください`);
       if (/【要確認：/.test(t)) w.push(`［${where}］未入力の情報（【要確認】）が残っています`);
+      // 強調（**語**）：優先1シート「強調すべき単語はハイライト」
+      const marks = (t.match(/\*\*/g) ?? []).length;
+      if (marks % 2 === 1) w.push(`［${where}］強調記号（**）の対応が取れていません`);
+      else if (marks / 2 > 2) w.push(`［${where}］強調が多すぎます（${marks / 2}か所）。1〜2か所に絞ってください`);
     }
   }
   return [...new Set(w)];

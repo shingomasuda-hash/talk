@@ -25,7 +25,8 @@ export type ProjectField =
   | "hearingItems"
   | "emailContent"
   | "evidence"
-  | "ngExpressions";
+  | "ngExpressions"
+  | "operatorPoints";
 
 export interface SceneCase {
   caseId: string;
@@ -413,6 +414,20 @@ export const SCENES: SceneDefinition[] = [
 
 export const SCENE_MAP: Record<string, SceneDefinition> = Object.fromEntries(SCENES.map((s) => [s.sceneId, s]));
 
+/**
+ * 完成版スクリプトの目次（Contents）。
+ * 優先1シート「利用イメージ」の画面案の並び（受付突破／最初の挨拶／主旨説明／ニーズ喚起／クロージング／ヒアリング）に合わせる。
+ * 主旨説明とニーズ喚起は S11 で一体のため1章にまとめた。
+ */
+export const CHAPTERS: { id: string; label: string; scenes: string[] }[] = [
+  { id: "reception", label: "受付突破", scenes: ["S01", "S02", "S04", "S05", "S06", "S07", "S08", "S09", "S10", "S18"] },
+  { id: "greeting", label: "最初の挨拶", scenes: ["S03"] },
+  { id: "pitch", label: "主旨説明・ニーズ喚起", scenes: ["S11"] },
+  { id: "closing", label: "クロージング", scenes: ["S13", "S14", "S15", "S16", "S17"] },
+  { id: "hearing", label: "ヒアリング", scenes: ["S12"] },
+];
+export const CHAPTER_OF: Record<string, string> = Object.fromEntries(CHAPTERS.flatMap((c) => c.scenes.map((s) => [s, c.label])));
+
 /** 案件の入力項目定義と、不足時の質問（指示書 Step 3） */
 export interface FieldDefinition {
   key: ProjectField;
@@ -484,6 +499,9 @@ export const FIELDS: FieldDefinition[] = [
   { key: "evidence", label: "実績・数値・事例（根拠あり）", kind: "longtext", priority: 5,
     question: "トークで使ってよい実績・数値・事例はありますか（出典つきで）。",
     purpose: "事実に基づく主旨説明。ここにない数値は生成しない", sufficient: "出典の分かる事実", followUp: "社名を出してよい事例ですか。" },
+  { key: "operatorPoints", label: "オペレーター向けの注意事項・ポイント", kind: "longtext", priority: 5,
+    question: "オペレーターがスクリプトを使う前に知っておくべき注意事項・ポイントはありますか（例：〇〇とは言わない、△△を必ず確認）。",
+    purpose: "完成版スクリプトの冒頭『注意事項・変更点・ポイント』に表示", sufficient: "箇条書きで1〜5点", followUp: "特に強調したい言葉はありますか。" },
   { key: "ngExpressions", label: "NG表現・注意事項", kind: "longtext", priority: 5,
     question: "クライアントから禁止されている表現や注意事項はありますか。",
     purpose: "全場面の避ける表現", sufficient: "禁止語・注意点の一覧", followUp: "業界特有の規制はありますか。" },

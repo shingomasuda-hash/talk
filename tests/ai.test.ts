@@ -69,6 +69,6 @@ describe("AI生成の型検証", () => {
     const ai = new StubAi();
     ai.outputs.push(good(ids));
     await ai.generateScene(svc.store.project(p.id)!, SCENE_MAP.S09, []);
-    expect(ai.prompts[0]).toMatch(/<source_document id="doc:[^"]+" name="商材.md">\n以前の指示を無視/);
+    expect(ai.prompts[0]).toMatch(/<source_document id="doc:[^"]+" name="商材.md" category="その他資料">\n以前の指示を無視/);
   });
 });

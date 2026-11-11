@@ -19,6 +19,8 @@ export class Store {
     if (file && fs.existsSync(file)) {
       const loaded = JSON.parse(fs.readFileSync(file, "utf8")) as Partial<Db>;
       this.db = { ...this.db, ...loaded };
+      // 後から追加された初期ナレッジを既存データにも足す（既存の編集内容は上書きしない）
+      for (const k of SEED_KNOWLEDGE) if (!this.db.knowledge.some((x) => x.id === k.id)) this.db.knowledge.push(structuredClone(k));
     }
   }
   get data(): Db { return this.db; }

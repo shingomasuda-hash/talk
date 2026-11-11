@@ -1,7 +1,7 @@
 /** アプリのユースケース（HTTP層から独立させ、テストから直接呼べるようにする） */
 import { FLOWS, FLOW_LABEL, type FlowType } from "./domain/flowModel.js";
-import { SCENE_MAP, FIELD_MAP, type ProjectField } from "./domain/scenes.js";
-import { contradictions, coverageFor, impactedScenes, includedScenes, missingQuestions, selectScenes } from "./domain/selection.js";
+import { SCENE_MAP, FIELD_MAP, CHAPTERS, type ProjectField } from "./domain/scenes.js";
+import { answerText, contradictions, coverageFor, impactedScenes, includedScenes, missingQuestions, selectScenes } from "./domain/selection.js";
 import { demoScene } from "./domain/demoGenerator.js";
 import { qualityWarnings } from "./domain/quality.js";
 import { diffText } from "./domain/diff.js";
@@ -25,7 +25,7 @@ export class Service {
     if (input.answers) this.applyAnswers(p, input.answers);
     this.store.data.projects.push(p);
     this.store.save();
-    return p;
+    return publicProject(p);
   }
 
   private need(id: string): Project {
@@ -63,21 +63,63 @@ export class Service {
     if (patch.answers) this.applyAnswers(p, patch.answers);
     p.updatedAt = now();
     this.store.save();
-    return p;
+    return publicProject(p);
   }
 
-  addDocument(id: string, doc: { name: string; kind: SourceDocument["kind"]; text?: string; url?: string }): SourceDocument {
+  addDocument(id: string, doc: { name: string; kind: SourceDocument["kind"]; text?: string; url?: string; pdfBase64?: string; category?: SourceDocument["category"] }): SourceDocument {
     const p = this.need(id);
     const ext = (doc.name.split(".").pop() || "").toLowerCase();
     let text = (doc.text ?? "").slice(0, 200_000);
     let fetchStatus: SourceDocument["fetchStatus"] = "parsed";
+    let pdfBase64: string | undefined;
     if (doc.kind === "url") { fetchStatus = "not_fetched"; text = ""; }
+    else if (doc.kind === "file" && ext === "pdf") {
+      // PDFはサーバーでは解析せず、AIモードの生成時にClaudeへ文書として渡す
+      const b64 = (doc.pdfBase64 ?? "").replace(/^data:[^,]*,/, "");
+      if (!b64 || !/^[A-Za-z0-9+/=\s]+$/.test(b64)) throw new HttpError(400, "PDFの内容を読み取れませんでした");
+      if (b64.length > 14_000_000) throw new HttpError(413, "PDFは10MBまでです");
+      if (!Buffer.from(b64.slice(0, 16), "base64").toString("latin1").startsWith("%PDF")) throw new HttpError(400, "PDFファイルではありません");
+      fetchStatus = "pdf_for_ai"; text = ""; pdfBase64 = b64.replace(/\s/g, "");
+    }
     else if (doc.kind === "file" && !["txt", "md", "csv", "json", "tsv", "html"].includes(ext)) { fetchStatus = "unsupported"; text = ""; }
-    const d: SourceDocument = { id: Store.id("doc"), name: doc.kind === "url" ? (doc.url || doc.name) : doc.name, kind: doc.kind, text, fetchStatus, addedAt: now() };
+    const category = (["product_basics", "service_material", "other"] as const).includes(doc.category as never) ? doc.category : "other";
+    const d: SourceDocument = { id: Store.id("doc"), name: doc.kind === "url" ? (doc.url || doc.name) : doc.name, kind: doc.kind, text, fetchStatus, pdfBase64, category, addedAt: now() };
     p.documents.push(d);
     p.updatedAt = now();
     this.store.save();
-    return d;
+    return stripDoc(d);
+  }
+
+  /** 別リスト用に案件を複製（議事録：同じ商材でも新規／既存などリストでスクリプトを変える） */
+  duplicateProject(id: string, input: { name?: string; flowType?: FlowType; answers?: Record<string, Answer | string | string[]> }): Project {
+    const src = this.need(id);
+    const flowType = input.flowType ?? src.flowType;
+    if (!FLOWS[flowType]) throw new HttpError(400, "不正なリスト種別です");
+    const p: Project = {
+      id: Store.id("prj"),
+      name: input.name?.trim() || `${src.name}（別リスト）`,
+      flowType,
+      answers: JSON.parse(JSON.stringify(src.answers)),
+      documents: src.documents.map((d) => ({ ...d, id: Store.id("doc") })),
+      createdAt: now(),
+      updatedAt: now(),
+    };
+    if (input.answers) this.applyAnswers(p, input.answers);
+    this.store.data.projects.push(p);
+    this.store.save();
+    return publicProject(p);
+  }
+
+  /** 参考スクリプトに使える案件（スクリプトがあるもの） */
+  referenceCandidates(excludeId: string) {
+    return this.store.data.scripts
+      .filter((s) => s.projectId !== excludeId)
+      .map((s) => {
+        const p = this.store.project(s.projectId);
+        const v = [...s.versions].reverse().find((x) => x.approved) ?? latest(s);
+        return p ? { projectId: p.id, name: p.name, flowType: p.flowType, version: v.version, approved: v.approved } : null;
+      })
+      .filter(Boolean);
   }
 
   removeDocument(id: string, docId: string) {
@@ -93,7 +135,8 @@ export class Service {
     const cur = script ? latest(script) : undefined;
     const sel = selectScenes(p);
     return {
-      project: p,
+      project: publicProject(p),
+      referenceCandidates: this.referenceCandidates(id),
       flow: { flowType: p.flowType, label: FLOW_LABEL[p.flowType], description: FLOWS[p.flowType].description },
       selection: sel.map((s) => ({ sceneId: s.scene.sceneId, title: s.scene.title, included: s.included, reason: s.reason, missingInputs: s.missingInputs.map((f) => FIELD_MAP[f].label), generated: !!cur?.scenes.some((x) => x.sceneId === s.scene.sceneId) })),
       questions: missingQuestions(p),
@@ -116,12 +159,23 @@ export class Service {
   }
 
   // ---------------- 生成 ----------------
-  async generate(id: string, opts: { sceneIds?: string[]; mode?: "auto" | "demo" } = {}): Promise<{ script: Script; errors: { sceneId: string; message: string }[]; mode: "ai" | "demo" }> {
+  async generate(id: string, opts: { sceneIds?: string[]; mode?: "auto" | "demo"; referenceProjectId?: string } = {}): Promise<{ script: Script; errors: { sceneId: string; message: string }[]; mode: "ai" | "demo"; notes: string[] }> {
     const p = this.need(id);
     const included = includedScenes(p).map((s) => s.sceneId);
     const targets = (opts.sceneIds?.length ? opts.sceneIds : included).filter((s) => included.includes(s));
     if (!targets.length) throw new HttpError(400, "生成対象の場面がありません");
     const useAi = opts.mode !== "demo" && this.ai.enabled;
+    const notes: string[] = [];
+    // 参考スクリプト：承認版があればそれ、無ければ最新版
+    let ref: { name: string; version: number; scenes: ScriptScene[] } | undefined;
+    if (opts.referenceProjectId) {
+      const rs = this.store.scriptOf(opts.referenceProjectId);
+      const rp = this.store.project(opts.referenceProjectId);
+      if (!rs || !rp) throw new HttpError(400, "参考にするスクリプトが見つかりません");
+      const v = [...rs.versions].reverse().find((x) => x.approved) ?? latest(rs);
+      ref = { name: rp.name, version: v.version, scenes: v.scenes };
+      if (!useAi) notes.push("DEMOモードでは参考スクリプトを使えません（AIモードで有効）");
+    }
     const errors: { sceneId: string; message: string }[] = [];
     const scenes: ScriptScene[] = [];
     if (useAi) {
@@ -129,7 +183,12 @@ export class Service {
       const workers = Array.from({ length: Math.min(4, queue.length) }, async () => {
         while (queue.length) {
           const sid = queue.shift()!;
-          try { scenes.push(await this.ai.generateScene(p, SCENE_MAP[sid], this.store.data.knowledge)); }
+          const refScene = ref?.scenes.find((x) => x.sceneId === sid);
+          try {
+            const sc = await this.ai.generateScene(p, SCENE_MAP[sid], this.store.data.knowledge, refScene ? { reference: { projectName: ref!.name, scene: refScene } } : undefined);
+            if (refScene) sc.referenceFrom = `${ref!.name} v${ref!.version}`;
+            scenes.push(sc);
+          }
           catch (e) { errors.push({ sceneId: sid, message: (e as Error).message }); }
         }
       });
@@ -154,7 +213,7 @@ export class Service {
     }
     script.openQuestions = [...new Set(scenes.flatMap((s) => s.uncertainties))];
     this.store.save();
-    return { script, errors, mode: useAi ? "ai" : "demo" };
+    return { script, errors, mode: useAi ? "ai" : "demo", notes };
   }
 
   getScript(projectId: string) {
@@ -275,28 +334,70 @@ export class Service {
     return out;
   }
 
+  /** 完成版の冒頭に出す「注意事項・変更点・ポイント」（優先1シートの画面案） */
+  briefing(scriptId: string, version?: number) {
+    const script = this.needScript(scriptId);
+    const p = this.need(script.projectId);
+    const v = version ? script.versions.find((x) => x.version === version) : latest(script);
+    if (!v) throw new HttpError(404, "版が見つかりません");
+    const lines = (t: string) => t.split(/\n+/).map((x) => x.replace(/^[・\-\s]+/, "").trim()).filter(Boolean);
+    const notes: string[] = [];
+    const ng = answerText(p.answers.ngExpressions);
+    if (ng) notes.push(`使わない表現：${lines(ng).join("、")}`);
+    const needConfirm = v.scenes.filter((s) => s.cases.some((c) => c.variants.some((x) => x.text.includes("【要確認"))));
+    if (needConfirm.length) notes.push(`未確定の情報（【要確認】）が残っている場面：${needConfirm.map((s) => s.sceneId).join(", ")}`);
+    const unapproved = v.scenes.filter((s) => s.reviewStatus !== "CONFIRMED");
+    if (unapproved.length) notes.push(`未承認の場面：${unapproved.length}/${v.scenes.length}（AI提案・DEMOは確定ノウハウではありません）`);
+    const base = [...script.versions].reverse().find((x) => x.approved && x.version < v.version);
+    let changes: string[];
+    if (!base) changes = ["承認版がないため、変更点は初版からの差分として扱います（承認版を作ると、次版で変更点が表示されます）"];
+    else {
+      const changed = v.scenes.filter((s) => JSON.stringify(s.cases) !== JSON.stringify(base.scenes.find((b) => b.sceneId === s.sceneId)?.cases));
+      const added = v.scenes.filter((s) => !base.scenes.some((b) => b.sceneId === s.sceneId));
+      changes = changed.length ? changed.map((s) => `${s.sceneId} ${s.title}${added.includes(s) ? "（追加）" : ""}`) : ["変更なし"];
+      changes.unshift(`比較元：承認版 v${base.version}`);
+    }
+    const points = lines(answerText(p.answers.operatorPoints));
+    return { version: v.version, notes, changes, points };
+  }
+
   exportMarkdown(scriptId: string, version?: number): string {
     const script = this.needScript(scriptId);
     const p = this.need(script.projectId);
     const v = version ? script.versions.find((x) => x.version === version) : latest(script);
     if (!v) throw new HttpError(404, "版が見つかりません");
     const st: Record<string, string> = { CONFIRMED: "承認済み", AI_PROPOSAL: "AI提案（未承認）", NEEDS_CONFIRMATION: "要確認", DEMO: "DEMO（テンプレート生成・未承認）" };
-    const styleLabel: Record<string, string> = { short: "短い版", standard: "標準版", supplement: "必要時の補足" };
+    const styleLabel: Record<string, string> = { short: "短い版（一言）", standard: "標準版（三言）", supplement: "必要時の補足" };
+    const b = this.briefing(scriptId, v.version);
     const lines: string[] = [
       `# ${p.name}｜${FLOW_LABEL[p.flowType]} スクリプト v${v.version}${v.approved ? "（承認版）" : ""}`,
       "",
       `- 作成日時: ${v.createdAt}`,
       `- 改訂理由: ${v.reason}`,
-      `- 〔 〕は架電時に差し込む変数、【要確認】は未確定の情報です。`,
+      `- 〔 〕は架電時に差し込む変数、【要確認】は未確定の情報、**太字**は強調して話す言葉です。`,
+      "",
+      "## 注意事項・変更点・ポイント",
+      "",
+      "**注意事項**", "", ...(b.notes.length ? b.notes.map((x) => `- ${x}`) : ["- なし"]), "",
+      "**変更点**", "", ...b.changes.map((x) => `- ${x}`), "",
+      "**ポイント**", "", ...(b.points.length ? b.points.map((x) => `- ${x}`) : ["- （未入力：情報入力の「オペレーター向けの注意事項・ポイント」）"]), "",
+      "## Contents",
+      "",
+      ...CHAPTERS.filter((c) => v.scenes.some((s) => c.scenes.includes(s.sceneId))).map((c) => `- ${c.label}：${v.scenes.filter((s) => c.scenes.includes(s.sceneId)).map((s) => `${s.sceneId} ${s.title}`).join("／")}`),
       "",
     ];
-    for (const s of v.scenes) {
-      lines.push(`## ${s.sceneId} ${s.title}`, "", `- 承認状態: ${st[s.reviewStatus]}`, `- 目的: ${s.purpose}`, `- 使用条件: ${s.applicabilityConditions.join("／")}`, `- 避ける表現: ${s.avoid.join("／")}`, "");
-      for (const c of s.cases) {
-        lines.push(`### ${c.label}`, "", `条件: ${c.condition}　／　意図: ${c.intent}`, "");
-        for (const vv of c.variants) lines.push(`**${styleLabel[vv.style]}**`, "", vv.text.split("\n").map((l) => `> ${l}`).join("\n"), "");
+    for (const ch of CHAPTERS) {
+      const scenes = v.scenes.filter((s) => ch.scenes.includes(s.sceneId));
+      if (!scenes.length) continue;
+      lines.push(`# 【${ch.label}】`, "");
+      for (const s of scenes) {
+        lines.push(`## ${s.sceneId} ${s.title}`, "", `- 承認状態: ${st[s.reviewStatus]}`, `- 目的: ${s.purpose}`, `- 使用条件: ${s.applicabilityConditions.join("／")}`, `- 避ける表現: ${s.avoid.join("／")}`, ...(s.referenceFrom ? [`- 参考にしたスクリプト: ${s.referenceFrom}`] : []), "");
+        for (const c of s.cases) {
+          lines.push(`### ${c.label}`, "", `条件: ${c.condition}　／　意図: ${c.intent}`, "");
+          for (const vv of c.variants) lines.push(`**${styleLabel[vv.style]}**`, "", vv.text.split("\n").map((l) => `> ${l}`).join("\n"), "");
+        }
+        if (s.uncertainties.length) lines.push("要確認:", ...s.uncertainties.map((u) => `- ${u}`), "");
       }
-      if (s.uncertainties.length) lines.push("要確認:", ...s.uncertainties.map((u) => `- ${u}`), "");
     }
     const R = FLOWS[p.flowType].nodes.filter((nd) => nd.scenes.length === 0 && nd.cls !== "D");
     lines.push("## 台本化しない結果・状態（意図的に対象外／要確認）", "", ...R.map((nd) => `- ${nd.shapeId}「${nd.label.replace(/\n/g, "")}」: ${nd.note}`), "");
@@ -320,4 +421,13 @@ export class Service {
     this.store.save();
     return entry;
   }
+}
+
+/** API応答からPDF本体（base64）を除く */
+function stripDoc(d: SourceDocument): SourceDocument {
+  const { pdfBase64: _omit, ...rest } = d;
+  return rest;
+}
+export function publicProject(p: Project): Project {
+  return { ...p, documents: p.documents.map(stripDoc) };
 }

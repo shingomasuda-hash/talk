@@ -14,7 +14,11 @@ export interface SourceDocument {
   name: string;
   kind: "file" | "url" | "paste" | "existing_script" | "minutes";
   text: string; // 抽出済みテキスト（URLは未取得なら空）
-  fetchStatus: "parsed" | "not_fetched" | "unsupported";
+  fetchStatus: "parsed" | "not_fetched" | "unsupported" | "pdf_for_ai";
+  /** PDF（AIモードのときだけClaudeへ文書として渡す）。base64 */
+  pdfBase64?: string;
+  /** 資料の区分（議事録の指摘：基本的な商材理解と具体的なサービス資料を分けて読み込ませる） */
+  category?: "product_basics" | "service_material" | "other";
   addedAt: string;
 }
 
@@ -55,6 +59,8 @@ export interface ScriptScene {
   /** 生成時に参照した入力のスナップショット（条件変更の影響判定に使う） */
   inputSnapshot: Record<string, string>;
   qualityWarnings: string[];
+  /** 形式・言い回しの参考にした既存スクリプト（案件名 vN） */
+  referenceFrom?: string;
 }
 
 export interface ScriptVersion {
