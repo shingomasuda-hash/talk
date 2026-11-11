@@ -1,0 +1,1953 @@
+{
+  "extraction_note": "最新版XLSXの2つの有効シートにあるDrawingML図形と接続線を機械的に抽出。矢印の方向を保証せず、connectionはendpoint_a/b。トーク生成仕様は別途人間の確認が必要。使用しないシートを除外。",
+  "source_filename": "テレアポのコールフロー（①キーマン名なし、②キーマン名あり）.xlsx",
+  "sheets": [
+    {
+      "sheet_name": "①キーマン名なしリスト",
+      "purpose": "コールフロー図の図形ラベル・接続線の抽出（AIの生成判断材料）",
+      "nodes": [
+        {
+          "shape_id": "2",
+          "label": "キーマンの部署の受付に取り次ぎ",
+          "anchor_from": {
+            "col": 24,
+            "colOff": 267518,
+            "row": 18,
+            "rowOff": 13516
+          },
+          "anchor_to": {
+            "col": 27,
+            "colOff": 235949,
+            "row": 21,
+            "rowOff": 13516
+          }
+        },
+        {
+          "shape_id": "3",
+          "label": "キーマンと\n対話できず",
+          "anchor_from": {
+            "col": 32,
+            "colOff": 190859,
+            "row": 24,
+            "rowOff": 1
+          },
+          "anchor_to": {
+            "col": 35,
+            "colOff": 159290,
+            "row": 27,
+            "rowOff": -1
+          }
+        },
+        {
+          "shape_id": "4",
+          "label": "キーマン\n不在",
+          "anchor_from": {
+            "col": 30,
+            "colOff": 14875,
+            "row": 29,
+            "rowOff": 6532
+          },
+          "anchor_to": {
+            "col": 32,
+            "colOff": 266334,
+            "row": 32,
+            "rowOff": 6533
+          }
+        },
+        {
+          "shape_id": "5",
+          "label": "在席日時\n入手",
+          "anchor_from": {
+            "col": 29,
+            "colOff": 228598,
+            "row": 39,
+            "rowOff": 214813
+          },
+          "anchor_to": {
+            "col": 32,
+            "colOff": 197028,
+            "row": 42,
+            "rowOff": 214815
+          }
+        },
+        {
+          "shape_id": "6",
+          "label": "在席日時\n入手できず",
+          "anchor_from": {
+            "col": 24,
+            "colOff": 79101,
+            "row": 39,
+            "rowOff": 214813
+          },
+          "anchor_to": {
+            "col": 27,
+            "colOff": 48621,
+            "row": 42,
+            "rowOff": 214815
+          }
+        },
+        {
+          "shape_id": "7",
+          "label": "取次ぎ\n拒否",
+          "anchor_from": {
+            "col": 41,
+            "colOff": 113933,
+            "row": 29,
+            "rowOff": 6532
+          },
+          "anchor_to": {
+            "col": 44,
+            "colOff": 85267,
+            "row": 32,
+            "rowOff": 6533
+          }
+        },
+        {
+          "shape_id": "8",
+          "label": "キーマンへメール\n転送OK",
+          "anchor_from": {
+            "col": 38,
+            "colOff": 262163,
+            "row": 39,
+            "rowOff": 214813
+          },
+          "anchor_to": {
+            "col": 41,
+            "colOff": 229870,
+            "row": 42,
+            "rowOff": 214815
+          }
+        },
+        {
+          "shape_id": "9",
+          "label": "問合せフォームへ\n誘導",
+          "anchor_from": {
+            "col": 56,
+            "colOff": 279031,
+            "row": 34,
+            "rowOff": 4356
+          },
+          "anchor_to": {
+            "col": 59,
+            "colOff": 246738,
+            "row": 37,
+            "rowOff": 4357
+          }
+        },
+        {
+          "shape_id": "10",
+          "label": "キーマンへメール\n転送NG",
+          "anchor_from": {
+            "col": 42,
+            "colOff": 151673,
+            "row": 39,
+            "rowOff": 214813
+          },
+          "anchor_to": {
+            "col": 45,
+            "colOff": 119379,
+            "row": 42,
+            "rowOff": 214815
+          }
+        },
+        {
+          "shape_id": "11",
+          "label": "基本出勤",
+          "anchor_from": {
+            "col": 22,
+            "colOff": 85634,
+            "row": 46,
+            "rowOff": 30481
+          },
+          "anchor_to": {
+            "col": 25,
+            "colOff": 54065,
+            "row": 49,
+            "rowOff": 30482
+          }
+        },
+        {
+          "shape_id": "12",
+          "label": "ほぼ在宅",
+          "anchor_from": {
+            "col": 27,
+            "colOff": 85634,
+            "row": 46,
+            "rowOff": 30481
+          },
+          "anchor_to": {
+            "col": 30,
+            "colOff": 54064,
+            "row": 49,
+            "rowOff": 30482
+          }
+        },
+        {
+          "shape_id": "13",
+          "label": "携帯電話\n番号入手",
+          "anchor_from": {
+            "col": 25,
+            "colOff": 227509,
+            "row": 51,
+            "rowOff": 9980
+          },
+          "anchor_to": {
+            "col": 28,
+            "colOff": 195940,
+            "row": 54,
+            "rowOff": 9979
+          }
+        },
+        {
+          "shape_id": "14",
+          "label": "携帯電話\n番号入手\nできず",
+          "anchor_from": {
+            "col": 29,
+            "colOff": 195941,
+            "row": 51,
+            "rowOff": 9980
+          },
+          "anchor_to": {
+            "col": 32,
+            "colOff": 165461,
+            "row": 54,
+            "rowOff": 9979
+          }
+        },
+        {
+          "shape_id": "15",
+          "label": "キーマンと対話",
+          "anchor_from": {
+            "col": 7,
+            "colOff": 25038,
+            "row": 24,
+            "rowOff": 0
+          },
+          "anchor_to": {
+            "col": 9,
+            "colOff": 276498,
+            "row": 26,
+            "rowOff": 217713
+          }
+        },
+        {
+          "shape_id": "16",
+          "label": "キーマン名\n入手",
+          "anchor_from": {
+            "col": 26,
+            "colOff": 276131,
+            "row": 34,
+            "rowOff": 4356
+          },
+          "anchor_to": {
+            "col": 29,
+            "colOff": 244562,
+            "row": 37,
+            "rowOff": 4355
+          }
+        },
+        {
+          "shape_id": "17",
+          "label": "キーマン名\n入手\nできず",
+          "anchor_from": {
+            "col": 32,
+            "colOff": 14874,
+            "row": 34,
+            "rowOff": 4356
+          },
+          "anchor_to": {
+            "col": 34,
+            "colOff": 266332,
+            "row": 37,
+            "rowOff": 4355
+          }
+        },
+        {
+          "shape_id": "18",
+          "label": "商談OK",
+          "anchor_from": {
+            "col": 1,
+            "colOff": 57692,
+            "row": 29,
+            "rowOff": 6532
+          },
+          "anchor_to": {
+            "col": 4,
+            "colOff": 26124,
+            "row": 32,
+            "rowOff": 6532
+          }
+        },
+        {
+          "shape_id": "19",
+          "label": "資料送付\nOK",
+          "anchor_from": {
+            "col": 5,
+            "colOff": 117565,
+            "row": 29,
+            "rowOff": 6532
+          },
+          "anchor_to": {
+            "col": 8,
+            "colOff": 85996,
+            "row": 32,
+            "rowOff": 6532
+          }
+        },
+        {
+          "shape_id": "20",
+          "label": "商談・資料\n不要",
+          "anchor_from": {
+            "col": 9,
+            "colOff": 177437,
+            "row": 29,
+            "rowOff": 6532
+          },
+          "anchor_to": {
+            "col": 12,
+            "colOff": 143147,
+            "row": 32,
+            "rowOff": 6531
+          }
+        },
+        {
+          "shape_id": "23",
+          "label": "会社として\n営業電話\n拒否",
+          "anchor_from": {
+            "col": 52,
+            "colOff": 199929,
+            "row": 34,
+            "rowOff": 4356
+          },
+          "anchor_to": {
+            "col": 55,
+            "colOff": 168361,
+            "row": 37,
+            "rowOff": 4355
+          }
+        },
+        {
+          "shape_id": "24",
+          "label": "受付判断\n拒否",
+          "anchor_from": {
+            "col": 47,
+            "colOff": 254358,
+            "row": 34,
+            "rowOff": 4356
+          },
+          "anchor_to": {
+            "col": 50,
+            "colOff": 222788,
+            "row": 37,
+            "rowOff": 4355
+          }
+        },
+        {
+          "shape_id": "25",
+          "label": "営業電話\n警戒\n（居留守）",
+          "anchor_from": {
+            "col": 39,
+            "colOff": 38459,
+            "row": 34,
+            "rowOff": 4356
+          },
+          "anchor_to": {
+            "col": 42,
+            "colOff": 5074,
+            "row": 37,
+            "rowOff": 4356
+          }
+        },
+        {
+          "shape_id": "26",
+          "label": "架電",
+          "anchor_from": {
+            "col": 32,
+            "colOff": 18506,
+            "row": 2,
+            "rowOff": 15241
+          },
+          "anchor_to": {
+            "col": 34,
+            "colOff": 269966,
+            "row": 5,
+            "rowOff": 15241
+          }
+        },
+        {
+          "shape_id": "27",
+          "label": "電話\nつながる",
+          "anchor_from": {
+            "col": 17,
+            "colOff": 94705,
+            "row": 7,
+            "rowOff": 6533
+          },
+          "anchor_to": {
+            "col": 20,
+            "colOff": 63137,
+            "row": 10,
+            "rowOff": 6532
+          }
+        },
+        {
+          "shape_id": "28",
+          "label": "電話\nつながらず",
+          "anchor_from": {
+            "col": 46,
+            "colOff": 109673,
+            "row": 7,
+            "rowOff": 5172
+          },
+          "anchor_to": {
+            "col": 49,
+            "colOff": 78104,
+            "row": 10,
+            "rowOff": 5171
+          }
+        },
+        {
+          "shape_id": "29",
+          "label": "受付担当者が受電",
+          "anchor_from": {
+            "col": 27,
+            "colOff": 52976,
+            "row": 12,
+            "rowOff": 19233
+          },
+          "anchor_to": {
+            "col": 30,
+            "colOff": 21408,
+            "row": 15,
+            "rowOff": 19232
+          }
+        },
+        {
+          "shape_id": "30",
+          "label": "キーマン\nが受電",
+          "anchor_from": {
+            "col": 9,
+            "colOff": 127363,
+            "row": 12,
+            "rowOff": 19233
+          },
+          "anchor_to": {
+            "col": 12,
+            "colOff": 95794,
+            "row": 15,
+            "rowOff": 19232
+          }
+        },
+        {
+          "shape_id": "60",
+          "label": "鳴りっぱなし",
+          "anchor_from": {
+            "col": 43,
+            "colOff": 78829,
+            "row": 12,
+            "rowOff": 19233
+          },
+          "anchor_to": {
+            "col": 46,
+            "colOff": 44540,
+            "row": 15,
+            "rowOff": 19232
+          }
+        },
+        {
+          "shape_id": "61",
+          "label": "留守電",
+          "anchor_from": {
+            "col": 48,
+            "colOff": 133257,
+            "row": 12,
+            "rowOff": 19233
+          },
+          "anchor_to": {
+            "col": 51,
+            "colOff": 101689,
+            "row": 15,
+            "rowOff": 19232
+          }
+        },
+        {
+          "shape_id": "62",
+          "label": "音声\nガイダンス",
+          "anchor_from": {
+            "col": 53,
+            "colOff": 285657,
+            "row": 12,
+            "rowOff": 19233
+          },
+          "anchor_to": {
+            "col": 56,
+            "colOff": 254089,
+            "row": 15,
+            "rowOff": 19232
+          }
+        },
+        {
+          "shape_id": "63",
+          "label": "電源が\n入って\nいない",
+          "anchor_from": {
+            "col": 59,
+            "colOff": 100600,
+            "row": 17,
+            "rowOff": 3991
+          },
+          "anchor_to": {
+            "col": 62,
+            "colOff": 69032,
+            "row": 20,
+            "rowOff": 3991
+          }
+        },
+        {
+          "shape_id": "64",
+          "label": "Pushボタン",
+          "anchor_from": {
+            "col": 54,
+            "colOff": 165914,
+            "row": 17,
+            "rowOff": 3991
+          },
+          "anchor_to": {
+            "col": 57,
+            "colOff": 134346,
+            "row": 20,
+            "rowOff": 3991
+          }
+        },
+        {
+          "shape_id": "65",
+          "label": "使われていない",
+          "anchor_from": {
+            "col": 49,
+            "colOff": 21678,
+            "row": 17,
+            "rowOff": 3991
+          },
+          "anchor_to": {
+            "col": 51,
+            "colOff": 275860,
+            "row": 20,
+            "rowOff": 3991
+          }
+        },
+        {
+          "shape_id": "73",
+          "label": "電話番号を調査して再架電",
+          "anchor_from": {
+            "col": 48,
+            "colOff": 221796,
+            "row": 20,
+            "rowOff": 76199
+          },
+          "anchor_to": {}
+        },
+        {
+          "shape_id": "75",
+          "label": "②キーマンあり\n　リストへ",
+          "anchor_from": {
+            "col": 4,
+            "colOff": 282416,
+            "row": 32,
+            "rowOff": 1360
+          },
+          "anchor_to": {}
+        },
+        {
+          "shape_id": "76",
+          "label": "次回コール可",
+          "anchor_from": {
+            "col": 6,
+            "colOff": 280854,
+            "row": 34,
+            "rowOff": 4356
+          },
+          "anchor_to": {
+            "col": 9,
+            "colOff": 249285,
+            "row": 37,
+            "rowOff": 4356
+          }
+        },
+        {
+          "shape_id": "77",
+          "label": "次回コール不可",
+          "anchor_from": {
+            "col": 14,
+            "colOff": 41365,
+            "row": 34,
+            "rowOff": 4356
+          },
+          "anchor_to": {
+            "col": 17,
+            "colOff": 9797,
+            "row": 37,
+            "rowOff": 4356
+          }
+        },
+        {
+          "shape_id": "78",
+          "label": "検討時期\nヒアリング",
+          "anchor_from": {
+            "col": 5,
+            "colOff": 71303,
+            "row": 39,
+            "rowOff": 214813
+          },
+          "anchor_to": {
+            "col": 8,
+            "colOff": 39734,
+            "row": 42,
+            "rowOff": 214813
+          }
+        },
+        {
+          "shape_id": "79",
+          "label": "検討時期\nヒアリング\nできず",
+          "anchor_from": {
+            "col": 8,
+            "colOff": 215540,
+            "row": 39,
+            "rowOff": 214813
+          },
+          "anchor_to": {
+            "col": 11,
+            "colOff": 183971,
+            "row": 42,
+            "rowOff": 214813
+          }
+        },
+        {
+          "shape_id": "80",
+          "label": "会社として\n可能性なし",
+          "anchor_from": {
+            "col": 12,
+            "colOff": 106679,
+            "row": 39,
+            "rowOff": 214813
+          },
+          "anchor_to": {
+            "col": 15,
+            "colOff": 75110,
+            "row": 42,
+            "rowOff": 214813
+          }
+        },
+        {
+          "shape_id": "81",
+          "label": "担当として\n可能性なし",
+          "anchor_from": {
+            "col": 16,
+            "colOff": 8708,
+            "row": 39,
+            "rowOff": 214813
+          },
+          "anchor_to": {
+            "col": 18,
+            "colOff": 262890,
+            "row": 42,
+            "rowOff": 214813
+          }
+        },
+        {
+          "shape_id": "88",
+          "label": "・クレーム\n・強い拒否",
+          "anchor_from": {
+            "col": 16,
+            "colOff": 49312,
+            "row": 43,
+            "rowOff": 17690
+          },
+          "anchor_to": {}
+        },
+        {
+          "shape_id": "89",
+          "label": "・業種違い\n　（ニーズなし）\n・取引不可",
+          "anchor_from": {
+            "col": 12,
+            "colOff": 125513,
+            "row": 43,
+            "rowOff": 17690
+          },
+          "anchor_to": {}
+        },
+        {
+          "shape_id": "90",
+          "label": "店長などの場合",
+          "anchor_from": {
+            "col": 29,
+            "colOff": 217714,
+            "row": 43,
+            "rowOff": 21771
+          },
+          "anchor_to": {}
+        },
+        {
+          "shape_id": "91",
+          "label": "キーマンへ確認前に\n拒否",
+          "anchor_from": {
+            "col": 46,
+            "colOff": 238757,
+            "row": 39,
+            "rowOff": 214813
+          },
+          "anchor_to": {
+            "col": 49,
+            "colOff": 206463,
+            "row": 42,
+            "rowOff": 214815
+          }
+        },
+        {
+          "shape_id": "92",
+          "label": "キーマンへ確認後に\n拒否",
+          "anchor_from": {
+            "col": 50,
+            "colOff": 195213,
+            "row": 39,
+            "rowOff": 214813
+          },
+          "anchor_to": {
+            "col": 53,
+            "colOff": 162920,
+            "row": 42,
+            "rowOff": 214815
+          }
+        },
+        {
+          "shape_id": "96",
+          "label": "キーマンへメール\nOK（直接）",
+          "anchor_from": {
+            "col": 35,
+            "colOff": 89624,
+            "row": 39,
+            "rowOff": 214813
+          },
+          "anchor_to": {
+            "col": 38,
+            "colOff": 57330,
+            "row": 42,
+            "rowOff": 214815
+          }
+        },
+        {
+          "shape_id": "116",
+          "label": "未完了\n（時間なく再架電など）",
+          "anchor_from": {
+            "col": 14,
+            "colOff": 234587,
+            "row": 29,
+            "rowOff": 6532
+          },
+          "anchor_to": {
+            "col": 17,
+            "colOff": 200297,
+            "row": 32,
+            "rowOff": 6531
+          }
+        }
+      ],
+      "connections": [
+        {
+          "connector_id": "31",
+          "endpoint_a_shape_id": "26",
+          "endpoint_b_shape_id": "27"
+        },
+        {
+          "connector_id": "32",
+          "endpoint_a_shape_id": "27",
+          "endpoint_b_shape_id": "30"
+        },
+        {
+          "connector_id": "33",
+          "endpoint_a_shape_id": "27",
+          "endpoint_b_shape_id": "29"
+        },
+        {
+          "connector_id": "38",
+          "endpoint_a_shape_id": "3",
+          "endpoint_b_shape_id": "4"
+        },
+        {
+          "connector_id": "39",
+          "endpoint_a_shape_id": "3",
+          "endpoint_b_shape_id": "7"
+        },
+        {
+          "connector_id": "40",
+          "endpoint_a_shape_id": "4",
+          "endpoint_b_shape_id": "16"
+        },
+        {
+          "connector_id": "41",
+          "endpoint_a_shape_id": "4",
+          "endpoint_b_shape_id": "17"
+        },
+        {
+          "connector_id": "42",
+          "endpoint_a_shape_id": "16",
+          "endpoint_b_shape_id": "5"
+        },
+        {
+          "connector_id": "43",
+          "endpoint_a_shape_id": "16",
+          "endpoint_b_shape_id": "6"
+        },
+        {
+          "connector_id": "44",
+          "endpoint_a_shape_id": "11",
+          "endpoint_b_shape_id": "6"
+        },
+        {
+          "connector_id": "45",
+          "endpoint_a_shape_id": "12",
+          "endpoint_b_shape_id": "6"
+        },
+        {
+          "connector_id": "46",
+          "endpoint_a_shape_id": "13",
+          "endpoint_b_shape_id": "12"
+        },
+        {
+          "connector_id": "47",
+          "endpoint_a_shape_id": "14",
+          "endpoint_b_shape_id": "12"
+        },
+        {
+          "connector_id": "48",
+          "endpoint_a_shape_id": "7",
+          "endpoint_b_shape_id": "25"
+        },
+        {
+          "connector_id": "49",
+          "endpoint_a_shape_id": "30",
+          "endpoint_b_shape_id": "15"
+        },
+        {
+          "connector_id": "50",
+          "endpoint_a_shape_id": "7",
+          "endpoint_b_shape_id": "24"
+        },
+        {
+          "connector_id": "51",
+          "endpoint_a_shape_id": "7",
+          "endpoint_b_shape_id": "23"
+        },
+        {
+          "connector_id": "52",
+          "endpoint_a_shape_id": "25",
+          "endpoint_b_shape_id": "8"
+        },
+        {
+          "connector_id": "53",
+          "endpoint_a_shape_id": "25",
+          "endpoint_b_shape_id": "10"
+        },
+        {
+          "connector_id": "56",
+          "endpoint_a_shape_id": "18",
+          "endpoint_b_shape_id": "15"
+        },
+        {
+          "connector_id": "57",
+          "endpoint_a_shape_id": "19",
+          "endpoint_b_shape_id": "15"
+        },
+        {
+          "connector_id": "58",
+          "endpoint_a_shape_id": "20",
+          "endpoint_b_shape_id": "15"
+        },
+        {
+          "connector_id": "59",
+          "endpoint_a_shape_id": "17",
+          "endpoint_b_shape_id": "5"
+        },
+        {
+          "connector_id": "66",
+          "endpoint_a_shape_id": "28",
+          "endpoint_b_shape_id": "60"
+        },
+        {
+          "connector_id": "67",
+          "endpoint_a_shape_id": "28",
+          "endpoint_b_shape_id": "61"
+        },
+        {
+          "connector_id": "68",
+          "endpoint_a_shape_id": "28",
+          "endpoint_b_shape_id": "62"
+        },
+        {
+          "connector_id": "69",
+          "endpoint_a_shape_id": "62",
+          "endpoint_b_shape_id": "65"
+        },
+        {
+          "connector_id": "70",
+          "endpoint_a_shape_id": "62",
+          "endpoint_b_shape_id": "64"
+        },
+        {
+          "connector_id": "71",
+          "endpoint_a_shape_id": "62",
+          "endpoint_b_shape_id": "63"
+        },
+        {
+          "connector_id": "72",
+          "endpoint_a_shape_id": "26",
+          "endpoint_b_shape_id": "28"
+        },
+        {
+          "connector_id": "74",
+          "endpoint_a_shape_id": "29",
+          "endpoint_b_shape_id": "15"
+        },
+        {
+          "connector_id": "82",
+          "endpoint_a_shape_id": "76",
+          "endpoint_b_shape_id": "20"
+        },
+        {
+          "connector_id": "83",
+          "endpoint_a_shape_id": "77",
+          "endpoint_b_shape_id": "20"
+        },
+        {
+          "connector_id": "84",
+          "endpoint_a_shape_id": "78",
+          "endpoint_b_shape_id": "76"
+        },
+        {
+          "connector_id": "85",
+          "endpoint_a_shape_id": "79",
+          "endpoint_b_shape_id": "76"
+        },
+        {
+          "connector_id": "86",
+          "endpoint_a_shape_id": "80",
+          "endpoint_b_shape_id": "77"
+        },
+        {
+          "connector_id": "87",
+          "endpoint_a_shape_id": "81",
+          "endpoint_b_shape_id": "77"
+        },
+        {
+          "connector_id": "93",
+          "endpoint_a_shape_id": "24",
+          "endpoint_b_shape_id": "91"
+        },
+        {
+          "connector_id": "94",
+          "endpoint_a_shape_id": "24",
+          "endpoint_b_shape_id": "92"
+        },
+        {
+          "connector_id": "95",
+          "endpoint_a_shape_id": "7",
+          "endpoint_b_shape_id": "9"
+        },
+        {
+          "connector_id": "97",
+          "endpoint_a_shape_id": "25",
+          "endpoint_b_shape_id": "96"
+        },
+        {
+          "connector_id": "98",
+          "endpoint_a_shape_id": "2",
+          "endpoint_b_shape_id": "15"
+        },
+        {
+          "connector_id": "101",
+          "endpoint_a_shape_id": "29",
+          "endpoint_b_shape_id": "2"
+        },
+        {
+          "connector_id": "104",
+          "endpoint_a_shape_id": "2",
+          "endpoint_b_shape_id": "3"
+        },
+        {
+          "connector_id": "107",
+          "endpoint_a_shape_id": "29",
+          "endpoint_b_shape_id": "3"
+        },
+        {
+          "connector_id": "117",
+          "endpoint_a_shape_id": "116",
+          "endpoint_b_shape_id": "15"
+        }
+      ]
+    },
+    {
+      "sheet_name": "②キーマン名ありリスト",
+      "purpose": "コールフロー図の図形ラベル・接続線の抽出（AIの生成判断材料）",
+      "nodes": [
+        {
+          "shape_id": "3",
+          "label": "キーマンと\n対話できず",
+          "anchor_from": {
+            "col": 32,
+            "colOff": 190859,
+            "row": 22,
+            "rowOff": 1
+          },
+          "anchor_to": {
+            "col": 35,
+            "colOff": 159290,
+            "row": 25,
+            "rowOff": -1
+          }
+        },
+        {
+          "shape_id": "4",
+          "label": "キーマン\n不在",
+          "anchor_from": {
+            "col": 30,
+            "colOff": 14875,
+            "row": 27,
+            "rowOff": 6532
+          },
+          "anchor_to": {
+            "col": 32,
+            "colOff": 266334,
+            "row": 30,
+            "rowOff": 6533
+          }
+        },
+        {
+          "shape_id": "5",
+          "label": "在席日時\n入手",
+          "anchor_from": {
+            "col": 29,
+            "colOff": 228598,
+            "row": 32,
+            "rowOff": 4356
+          },
+          "anchor_to": {
+            "col": 32,
+            "colOff": 197028,
+            "row": 35,
+            "rowOff": 4358
+          }
+        },
+        {
+          "shape_id": "6",
+          "label": "在席日時\n入手できず",
+          "anchor_from": {
+            "col": 24,
+            "colOff": 79101,
+            "row": 32,
+            "rowOff": 4356
+          },
+          "anchor_to": {
+            "col": 27,
+            "colOff": 48621,
+            "row": 35,
+            "rowOff": 4358
+          }
+        },
+        {
+          "shape_id": "7",
+          "label": "取次ぎ\n拒否",
+          "anchor_from": {
+            "col": 41,
+            "colOff": 113933,
+            "row": 27,
+            "rowOff": 6532
+          },
+          "anchor_to": {
+            "col": 44,
+            "colOff": 85267,
+            "row": 30,
+            "rowOff": 6533
+          }
+        },
+        {
+          "shape_id": "8",
+          "label": "キーマンへメール\n転送OK",
+          "anchor_from": {
+            "col": 38,
+            "colOff": 262163,
+            "row": 37,
+            "rowOff": 214813
+          },
+          "anchor_to": {
+            "col": 41,
+            "colOff": 229870,
+            "row": 40,
+            "rowOff": 214815
+          }
+        },
+        {
+          "shape_id": "9",
+          "label": "問合せフォームへ\n誘導",
+          "anchor_from": {
+            "col": 56,
+            "colOff": 279031,
+            "row": 32,
+            "rowOff": 4356
+          },
+          "anchor_to": {
+            "col": 59,
+            "colOff": 246738,
+            "row": 35,
+            "rowOff": 4357
+          }
+        },
+        {
+          "shape_id": "10",
+          "label": "キーマンへメール\n転送NG",
+          "anchor_from": {
+            "col": 42,
+            "colOff": 151673,
+            "row": 37,
+            "rowOff": 214813
+          },
+          "anchor_to": {
+            "col": 45,
+            "colOff": 119379,
+            "row": 40,
+            "rowOff": 214815
+          }
+        },
+        {
+          "shape_id": "11",
+          "label": "基本出勤",
+          "anchor_from": {
+            "col": 22,
+            "colOff": 85634,
+            "row": 37,
+            "rowOff": 214813
+          },
+          "anchor_to": {
+            "col": 25,
+            "colOff": 54065,
+            "row": 40,
+            "rowOff": 214814
+          }
+        },
+        {
+          "shape_id": "12",
+          "label": "ほぼ在宅",
+          "anchor_from": {
+            "col": 27,
+            "colOff": 85634,
+            "row": 37,
+            "rowOff": 214813
+          },
+          "anchor_to": {
+            "col": 30,
+            "colOff": 54064,
+            "row": 40,
+            "rowOff": 214814
+          }
+        },
+        {
+          "shape_id": "13",
+          "label": "携帯電話\n番号入手",
+          "anchor_from": {
+            "col": 25,
+            "colOff": 227509,
+            "row": 43,
+            "rowOff": 9980
+          },
+          "anchor_to": {
+            "col": 28,
+            "colOff": 195940,
+            "row": 46,
+            "rowOff": 9979
+          }
+        },
+        {
+          "shape_id": "14",
+          "label": "携帯電話\n番号入手\nできず",
+          "anchor_from": {
+            "col": 29,
+            "colOff": 195941,
+            "row": 43,
+            "rowOff": 9980
+          },
+          "anchor_to": {
+            "col": 32,
+            "colOff": 165461,
+            "row": 46,
+            "rowOff": 9979
+          }
+        },
+        {
+          "shape_id": "15",
+          "label": "キーマンと対話",
+          "anchor_from": {
+            "col": 7,
+            "colOff": 25038,
+            "row": 22,
+            "rowOff": 0
+          },
+          "anchor_to": {
+            "col": 9,
+            "colOff": 276498,
+            "row": 24,
+            "rowOff": 217713
+          }
+        },
+        {
+          "shape_id": "16",
+          "label": "在籍なし\n（退職・異動）",
+          "anchor_from": {
+            "col": 63,
+            "colOff": 3265,
+            "row": 27,
+            "rowOff": 6532
+          },
+          "anchor_to": {
+            "col": 65,
+            "colOff": 254725,
+            "row": 29,
+            "rowOff": 216625
+          }
+        },
+        {
+          "shape_id": "22",
+          "label": "商談希望",
+          "anchor_from": {
+            "col": 1,
+            "colOff": 57692,
+            "row": 27,
+            "rowOff": 6532
+          },
+          "anchor_to": {
+            "col": 4,
+            "colOff": 26124,
+            "row": 30,
+            "rowOff": 6532
+          }
+        },
+        {
+          "shape_id": "23",
+          "label": "資料送付\n希望",
+          "anchor_from": {
+            "col": 5,
+            "colOff": 52250,
+            "row": 27,
+            "rowOff": 6532
+          },
+          "anchor_to": {
+            "col": 8,
+            "colOff": 20681,
+            "row": 30,
+            "rowOff": 6532
+          }
+        },
+        {
+          "shape_id": "24",
+          "label": "商談・資料\n不要",
+          "anchor_from": {
+            "col": 9,
+            "colOff": 225062,
+            "row": 27,
+            "rowOff": 6532
+          },
+          "anchor_to": {
+            "col": 12,
+            "colOff": 190772,
+            "row": 30,
+            "rowOff": 6531
+          }
+        },
+        {
+          "shape_id": "26",
+          "label": "未完了\n（時間なく再架電など）",
+          "anchor_from": {
+            "col": 15,
+            "colOff": 75382,
+            "row": 27,
+            "rowOff": 6532
+          },
+          "anchor_to": {
+            "col": 18,
+            "colOff": 43813,
+            "row": 30,
+            "rowOff": 6531
+          }
+        },
+        {
+          "shape_id": "27",
+          "label": "会社として\n営業電話\n拒否",
+          "anchor_from": {
+            "col": 52,
+            "colOff": 199929,
+            "row": 32,
+            "rowOff": 4356
+          },
+          "anchor_to": {
+            "col": 55,
+            "colOff": 168361,
+            "row": 35,
+            "rowOff": 4355
+          }
+        },
+        {
+          "shape_id": "28",
+          "label": "受付判断\n拒否",
+          "anchor_from": {
+            "col": 47,
+            "colOff": 254358,
+            "row": 32,
+            "rowOff": 4356
+          },
+          "anchor_to": {
+            "col": 50,
+            "colOff": 222788,
+            "row": 35,
+            "rowOff": 4355
+          }
+        },
+        {
+          "shape_id": "29",
+          "label": "営業電話\n警戒\n（居留守）",
+          "anchor_from": {
+            "col": 39,
+            "colOff": 38459,
+            "row": 32,
+            "rowOff": 4356
+          },
+          "anchor_to": {
+            "col": 42,
+            "colOff": 5074,
+            "row": 35,
+            "rowOff": 4356
+          }
+        },
+        {
+          "shape_id": "30",
+          "label": "架電",
+          "anchor_from": {
+            "col": 32,
+            "colOff": 18506,
+            "row": 2,
+            "rowOff": 15241
+          },
+          "anchor_to": {
+            "col": 34,
+            "colOff": 269966,
+            "row": 5,
+            "rowOff": 15241
+          }
+        },
+        {
+          "shape_id": "31",
+          "label": "電話\nつながる",
+          "anchor_from": {
+            "col": 17,
+            "colOff": 94705,
+            "row": 7,
+            "rowOff": 6533
+          },
+          "anchor_to": {
+            "col": 20,
+            "colOff": 63137,
+            "row": 10,
+            "rowOff": 6532
+          }
+        },
+        {
+          "shape_id": "32",
+          "label": "電話\nつながらず",
+          "anchor_from": {
+            "col": 54,
+            "colOff": 62048,
+            "row": 6,
+            "rowOff": 224247
+          },
+          "anchor_to": {
+            "col": 57,
+            "colOff": 30479,
+            "row": 9,
+            "rowOff": 224246
+          }
+        },
+        {
+          "shape_id": "33",
+          "label": "キーマン\n部署の受付が受電",
+          "anchor_from": {
+            "col": 27,
+            "colOff": 52976,
+            "row": 12,
+            "rowOff": 19233
+          },
+          "anchor_to": {
+            "col": 30,
+            "colOff": 21408,
+            "row": 15,
+            "rowOff": 19232
+          }
+        },
+        {
+          "shape_id": "34",
+          "label": "キーマン\nが受電",
+          "anchor_from": {
+            "col": 9,
+            "colOff": 127363,
+            "row": 12,
+            "rowOff": 19233
+          },
+          "anchor_to": {
+            "col": 12,
+            "colOff": 95794,
+            "row": 15,
+            "rowOff": 19232
+          }
+        },
+        {
+          "shape_id": "64",
+          "label": "鳴りっぱなし",
+          "anchor_from": {
+            "col": 51,
+            "colOff": 31204,
+            "row": 12,
+            "rowOff": 19233
+          },
+          "anchor_to": {
+            "col": 53,
+            "colOff": 282665,
+            "row": 15,
+            "rowOff": 19232
+          }
+        },
+        {
+          "shape_id": "65",
+          "label": "留守電",
+          "anchor_from": {
+            "col": 56,
+            "colOff": 85632,
+            "row": 12,
+            "rowOff": 19233
+          },
+          "anchor_to": {
+            "col": 59,
+            "colOff": 54064,
+            "row": 15,
+            "rowOff": 19232
+          }
+        },
+        {
+          "shape_id": "66",
+          "label": "音声\nガイダンス",
+          "anchor_from": {
+            "col": 61,
+            "colOff": 238032,
+            "row": 12,
+            "rowOff": 19233
+          },
+          "anchor_to": {
+            "col": 64,
+            "colOff": 206464,
+            "row": 15,
+            "rowOff": 19232
+          }
+        },
+        {
+          "shape_id": "67",
+          "label": "電源が\n入って\nいない",
+          "anchor_from": {
+            "col": 67,
+            "colOff": 52975,
+            "row": 17,
+            "rowOff": 3991
+          },
+          "anchor_to": {
+            "col": 70,
+            "colOff": 21407,
+            "row": 20,
+            "rowOff": 3991
+          }
+        },
+        {
+          "shape_id": "68",
+          "label": "Pushボタン",
+          "anchor_from": {
+            "col": 62,
+            "colOff": 118289,
+            "row": 17,
+            "rowOff": 3991
+          },
+          "anchor_to": {
+            "col": 65,
+            "colOff": 86721,
+            "row": 20,
+            "rowOff": 3991
+          }
+        },
+        {
+          "shape_id": "69",
+          "label": "使われていない",
+          "anchor_from": {
+            "col": 56,
+            "colOff": 259803,
+            "row": 17,
+            "rowOff": 3991
+          },
+          "anchor_to": {
+            "col": 59,
+            "colOff": 228235,
+            "row": 20,
+            "rowOff": 3991
+          }
+        },
+        {
+          "shape_id": "77",
+          "label": "電話番号を調査して再架電",
+          "anchor_from": {
+            "col": 56,
+            "colOff": 174171,
+            "row": 20,
+            "rowOff": 76199
+          },
+          "anchor_to": {}
+        },
+        {
+          "shape_id": "80",
+          "label": "次回コール可",
+          "anchor_from": {
+            "col": 7,
+            "colOff": 166554,
+            "row": 32,
+            "rowOff": 4356
+          },
+          "anchor_to": {
+            "col": 10,
+            "colOff": 134985,
+            "row": 35,
+            "rowOff": 4356
+          }
+        },
+        {
+          "shape_id": "81",
+          "label": "次回コール不可",
+          "anchor_from": {
+            "col": 14,
+            "colOff": 231865,
+            "row": 32,
+            "rowOff": 4356
+          },
+          "anchor_to": {
+            "col": 17,
+            "colOff": 200297,
+            "row": 35,
+            "rowOff": 4356
+          }
+        },
+        {
+          "shape_id": "82",
+          "label": "検討時期\nヒアリング",
+          "anchor_from": {
+            "col": 5,
+            "colOff": 242753,
+            "row": 37,
+            "rowOff": 214813
+          },
+          "anchor_to": {
+            "col": 8,
+            "colOff": 211184,
+            "row": 40,
+            "rowOff": 214813
+          }
+        },
+        {
+          "shape_id": "83",
+          "label": "検討時期\nヒアリング\nできず",
+          "anchor_from": {
+            "col": 9,
+            "colOff": 101240,
+            "row": 37,
+            "rowOff": 214813
+          },
+          "anchor_to": {
+            "col": 12,
+            "colOff": 69671,
+            "row": 40,
+            "rowOff": 214813
+          }
+        },
+        {
+          "shape_id": "84",
+          "label": "会社として\n可能性なし",
+          "anchor_from": {
+            "col": 13,
+            "colOff": 11429,
+            "row": 37,
+            "rowOff": 214813
+          },
+          "anchor_to": {
+            "col": 15,
+            "colOff": 265610,
+            "row": 40,
+            "rowOff": 214813
+          }
+        },
+        {
+          "shape_id": "85",
+          "label": "担当として\n可能性なし",
+          "anchor_from": {
+            "col": 16,
+            "colOff": 199208,
+            "row": 37,
+            "rowOff": 214813
+          },
+          "anchor_to": {
+            "col": 19,
+            "colOff": 167640,
+            "row": 40,
+            "rowOff": 214813
+          }
+        },
+        {
+          "shape_id": "92",
+          "label": "・クレーム\n・強い拒否",
+          "anchor_from": {
+            "col": 16,
+            "colOff": 182662,
+            "row": 41,
+            "rowOff": 8165
+          },
+          "anchor_to": {}
+        },
+        {
+          "shape_id": "93",
+          "label": "・業種違い\n　（ニーズなし）\n・取引不可",
+          "anchor_from": {
+            "col": 12,
+            "colOff": 258863,
+            "row": 41,
+            "rowOff": 8165
+          },
+          "anchor_to": {}
+        },
+        {
+          "shape_id": "95",
+          "label": "キーマンへ確認前に\n拒否",
+          "anchor_from": {
+            "col": 46,
+            "colOff": 238757,
+            "row": 37,
+            "rowOff": 214813
+          },
+          "anchor_to": {
+            "col": 49,
+            "colOff": 206463,
+            "row": 40,
+            "rowOff": 214815
+          }
+        },
+        {
+          "shape_id": "96",
+          "label": "キーマンへ確認後に\n拒否",
+          "anchor_from": {
+            "col": 50,
+            "colOff": 195213,
+            "row": 37,
+            "rowOff": 214813
+          },
+          "anchor_to": {
+            "col": 53,
+            "colOff": 162920,
+            "row": 40,
+            "rowOff": 214815
+          }
+        },
+        {
+          "shape_id": "100",
+          "label": "キーマンへメール\nOK（直接）",
+          "anchor_from": {
+            "col": 35,
+            "colOff": 89624,
+            "row": 37,
+            "rowOff": 214813
+          },
+          "anchor_to": {
+            "col": 38,
+            "colOff": 57330,
+            "row": 40,
+            "rowOff": 214815
+          }
+        },
+        {
+          "shape_id": "119",
+          "label": "後任者\n入手",
+          "anchor_from": {
+            "col": 61,
+            "colOff": 133891,
+            "row": 32,
+            "rowOff": 4356
+          },
+          "anchor_to": {
+            "col": 64,
+            "colOff": 102322,
+            "row": 35,
+            "rowOff": 4355
+          }
+        },
+        {
+          "shape_id": "122",
+          "label": "後任者\n入手\nできず",
+          "anchor_from": {
+            "col": 65,
+            "colOff": 133892,
+            "row": 32,
+            "rowOff": 4356
+          },
+          "anchor_to": {
+            "col": 68,
+            "colOff": 102323,
+            "row": 35,
+            "rowOff": 4355
+          }
+        },
+        {
+          "shape_id": "2",
+          "label": "・後任者へ取次依頼\n・②キーマン名ありコールへ",
+          "anchor_from": {
+            "col": 61,
+            "colOff": 110966,
+            "row": 35,
+            "rowOff": 66674
+          },
+          "anchor_to": {}
+        },
+        {
+          "shape_id": "17",
+          "label": "信頼が高いキーマン（優良顧客）から\n信頼が低いキーマン（数年前に展示会でブースに立ち寄っただけの人など）がいるので、\n確率（例：取次ぎ不可率など）は、リストによって変わる",
+          "anchor_from": {
+            "col": 1,
+            "colOff": 163285,
+            "row": 2,
+            "rowOff": 0
+          },
+          "anchor_to": {}
+        }
+      ],
+      "connections": [
+        {
+          "connector_id": "35",
+          "endpoint_a_shape_id": "30",
+          "endpoint_b_shape_id": "31"
+        },
+        {
+          "connector_id": "36",
+          "endpoint_a_shape_id": "31",
+          "endpoint_b_shape_id": "34"
+        },
+        {
+          "connector_id": "37",
+          "endpoint_a_shape_id": "31",
+          "endpoint_b_shape_id": "33"
+        },
+        {
+          "connector_id": "39",
+          "endpoint_a_shape_id": "33",
+          "endpoint_b_shape_id": "3"
+        },
+        {
+          "connector_id": "42",
+          "endpoint_a_shape_id": "3",
+          "endpoint_b_shape_id": "4"
+        },
+        {
+          "connector_id": "43",
+          "endpoint_a_shape_id": "3",
+          "endpoint_b_shape_id": "7"
+        },
+        {
+          "connector_id": "44",
+          "endpoint_a_shape_id": "4",
+          "endpoint_b_shape_id": "6"
+        },
+        {
+          "connector_id": "48",
+          "endpoint_a_shape_id": "11",
+          "endpoint_b_shape_id": "6"
+        },
+        {
+          "connector_id": "49",
+          "endpoint_a_shape_id": "12",
+          "endpoint_b_shape_id": "6"
+        },
+        {
+          "connector_id": "50",
+          "endpoint_a_shape_id": "13",
+          "endpoint_b_shape_id": "12"
+        },
+        {
+          "connector_id": "51",
+          "endpoint_a_shape_id": "14",
+          "endpoint_b_shape_id": "12"
+        },
+        {
+          "connector_id": "52",
+          "endpoint_a_shape_id": "7",
+          "endpoint_b_shape_id": "29"
+        },
+        {
+          "connector_id": "53",
+          "endpoint_a_shape_id": "34",
+          "endpoint_b_shape_id": "15"
+        },
+        {
+          "connector_id": "54",
+          "endpoint_a_shape_id": "7",
+          "endpoint_b_shape_id": "28"
+        },
+        {
+          "connector_id": "55",
+          "endpoint_a_shape_id": "7",
+          "endpoint_b_shape_id": "27"
+        },
+        {
+          "connector_id": "56",
+          "endpoint_a_shape_id": "29",
+          "endpoint_b_shape_id": "8"
+        },
+        {
+          "connector_id": "57",
+          "endpoint_a_shape_id": "29",
+          "endpoint_b_shape_id": "10"
+        },
+        {
+          "connector_id": "60",
+          "endpoint_a_shape_id": "22",
+          "endpoint_b_shape_id": "15"
+        },
+        {
+          "connector_id": "61",
+          "endpoint_a_shape_id": "23",
+          "endpoint_b_shape_id": "15"
+        },
+        {
+          "connector_id": "62",
+          "endpoint_a_shape_id": "24",
+          "endpoint_b_shape_id": "15"
+        },
+        {
+          "connector_id": "70",
+          "endpoint_a_shape_id": "32",
+          "endpoint_b_shape_id": "64"
+        },
+        {
+          "connector_id": "71",
+          "endpoint_a_shape_id": "32",
+          "endpoint_b_shape_id": "65"
+        },
+        {
+          "connector_id": "72",
+          "endpoint_a_shape_id": "32",
+          "endpoint_b_shape_id": "66"
+        },
+        {
+          "connector_id": "73",
+          "endpoint_a_shape_id": "66",
+          "endpoint_b_shape_id": "69"
+        },
+        {
+          "connector_id": "74",
+          "endpoint_a_shape_id": "66",
+          "endpoint_b_shape_id": "68"
+        },
+        {
+          "connector_id": "75",
+          "endpoint_a_shape_id": "66",
+          "endpoint_b_shape_id": "67"
+        },
+        {
+          "connector_id": "76",
+          "endpoint_a_shape_id": "30",
+          "endpoint_b_shape_id": "32"
+        },
+        {
+          "connector_id": "86",
+          "endpoint_a_shape_id": "80",
+          "endpoint_b_shape_id": "24"
+        },
+        {
+          "connector_id": "87",
+          "endpoint_a_shape_id": "81",
+          "endpoint_b_shape_id": "24"
+        },
+        {
+          "connector_id": "88",
+          "endpoint_a_shape_id": "82",
+          "endpoint_b_shape_id": "80"
+        },
+        {
+          "connector_id": "89",
+          "endpoint_a_shape_id": "83",
+          "endpoint_b_shape_id": "80"
+        },
+        {
+          "connector_id": "90",
+          "endpoint_a_shape_id": "84",
+          "endpoint_b_shape_id": "81"
+        },
+        {
+          "connector_id": "91",
+          "endpoint_a_shape_id": "85",
+          "endpoint_b_shape_id": "81"
+        },
+        {
+          "connector_id": "97",
+          "endpoint_a_shape_id": "28",
+          "endpoint_b_shape_id": "95"
+        },
+        {
+          "connector_id": "98",
+          "endpoint_a_shape_id": "28",
+          "endpoint_b_shape_id": "96"
+        },
+        {
+          "connector_id": "99",
+          "endpoint_a_shape_id": "7",
+          "endpoint_b_shape_id": "9"
+        },
+        {
+          "connector_id": "101",
+          "endpoint_a_shape_id": "29",
+          "endpoint_b_shape_id": "100"
+        },
+        {
+          "connector_id": "106",
+          "endpoint_a_shape_id": "4",
+          "endpoint_b_shape_id": "5"
+        },
+        {
+          "connector_id": "110",
+          "endpoint_a_shape_id": "3",
+          "endpoint_b_shape_id": "16"
+        },
+        {
+          "connector_id": "113",
+          "endpoint_a_shape_id": "16",
+          "endpoint_b_shape_id": "119"
+        },
+        {
+          "connector_id": "116",
+          "endpoint_a_shape_id": "16",
+          "endpoint_b_shape_id": "122"
+        },
+        {
+          "connector_id": "18",
+          "endpoint_a_shape_id": "33",
+          "endpoint_b_shape_id": "15"
+        },
+        {
+          "connector_id": "47",
+          "endpoint_a_shape_id": "26",
+          "endpoint_b_shape_id": "15"
+        }
+      ]
+    }
+  ]
+}
