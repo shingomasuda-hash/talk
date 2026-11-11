@@ -78,7 +78,9 @@ export class Service {
       const b64 = (doc.pdfBase64 ?? "").replace(/^data:[^,]*,/, "");
       if (!b64 || !/^[A-Za-z0-9+/=\s]+$/.test(b64)) throw new HttpError(400, "PDFの内容を読み取れませんでした");
       if (b64.length > 14_000_000) throw new HttpError(413, "PDFは10MBまでです");
-      if (!Buffer.from(b64.slice(0, 16), "base64").toString("latin1").startsWith("%PDF")) throw new HttpError(400, "PDFファイルではありません");
+      let head = "";
+      try { head = atob(b64.replace(/\s/g, "").slice(0, 8)); } catch { /* 不正なbase64 */ }
+      if (!head.startsWith("%PDF")) throw new HttpError(400, "PDFファイルではありません");
       fetchStatus = "pdf_for_ai"; text = ""; pdfBase64 = b64.replace(/\s/g, "");
     }
     else if (doc.kind === "file" && !["txt", "md", "csv", "json", "tsv", "html"].includes(ext)) { fetchStatus = "unsupported"; text = ""; }

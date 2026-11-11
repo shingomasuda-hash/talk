@@ -57,6 +57,16 @@ DEMOの全文をターミナルで見る：
 npx tsx scripts/demo-print.ts A
 ```
 
+## 公開デモ（ブラウザだけで動く1ファイル版）
+
+サーバー無しで動くデモ（DEMOモード固定・AIは使わない・データは閲覧者のブラウザに保存）を1つのHTMLにまとめます。
+
+```bash
+npm run build:demo
+```
+
+`dist/script-ai-demo.html` ができます。サーバー版と同じサービス層・ルート表（`src/routes.ts`）をブラウザ内で動かしています（`src/browser/demo.ts`）。
+
 ## テスト
 
 ```bash
@@ -95,6 +105,8 @@ src/domain/quality.ts         AI出力スキーマ・構造検証・品質チェ
 src/domain/revision.ts        修正提案の適用・手編集・版管理
 src/ai/claude.ts              Claude API 呼び出し（structured outputs）
 src/service.ts / server.ts    ユースケースとHTTP API
+src/routes.ts                 APIルート表（サーバー版・公開デモ版で共用）
+src/browser/demo.ts           公開デモ版：ブラウザ内でAPIを処理（localStorage保存）
 public/                       画面（5タブ＋ナレッジ）
 docs/                         01〜05・要件の疑義
 ```

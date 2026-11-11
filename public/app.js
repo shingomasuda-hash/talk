@@ -4,7 +4,9 @@ const $$ = (s, r = document) => [...r.querySelectorAll(s)];
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 const nl = (s) => esc(s).replace(/\n/g, "<br>");
 
-const S = { meta: null, projects: [], pid: localStorage.getItem("pid") || "", an: null, script: null, proposal: null, sel4: new Set(), busy: false };
+const lsGet = (k) => { try { return localStorage.getItem(k); } catch { return null; } };
+const lsSet = (k, v) => { try { localStorage.setItem(k, v); } catch { /* 保存できない環境 */ } };
+const S = { meta: null, projects: [], pid: lsGet("pid") || "", an: null, script: null, proposal: null, sel4: new Set(), busy: false };
 const STATUS = { CONFIRMED: ["承認済み", "ok"], AI_PROPOSAL: ["AI提案（未承認）", ""], NEEDS_CONFIRMATION: ["要確認", "warn"], DEMO: ["DEMO（未承認）", "demo"] };
 const STYLE = { short: "短い版（一言）", standard: "標準版（三言）", supplement: "必要時の補足" };
 const DOCCAT = { product_basics: "基本的な商材理解", service_material: "具体的なサービス資料", other: "その他" };
@@ -29,13 +31,16 @@ async function run(fn, btn) {
 const badge = (pair) => `<span class="badge ${pair[1]}">${esc(pair[0])}</span>`;
 const scenesOf = () => (S.script ? S.script.versions[S.script.versions.length - 1].scenes : []);
 const latestV = () => (S.script ? S.script.versions[S.script.versions.length - 1] : null);
-const copyText = (t) => navigator.clipboard?.writeText(t).then(() => toast("コピーしました"), () => toast("コピーできませんでした", true));
+const copyText = (t) => (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject()).then(() => toast("コピーしました"), () => toast("この環境では自動コピーできません。文面を選択してコピーしてください", true));
 const fieldLabel = (k) => S.meta.fields.find((f) => f.key === k)?.label ?? k;
 
 // ---------------------------------------------------------------- 読み込み
 async function boot() {
   S.meta = await api("/api/meta");
-  $("#aiBadge").innerHTML = S.meta.aiEnabled ? `<span class="badge ok">AI接続：${esc(S.meta.model)}</span>` : `<span class="badge demo">DEMOモード（APIキー未設定）</span>`;
+  $("#aiBadge").innerHTML = S.meta.staticDemo
+    ? `<span class="badge demo">公開デモ（DEMOモード・データはこのブラウザだけに保存）</span> <button class="btn ghost small" id="resetDemo" type="button">最初からやり直す</button>`
+    : S.meta.aiEnabled ? `<span class="badge ok">AI接続：${esc(S.meta.model)}</span>` : `<span class="badge demo">DEMOモード（APIキー未設定）</span>`;
+  if ($("#resetDemo")) { let armed = false; $("#resetDemo").onclick = (e) => { if (!armed) { armed = true; e.target.textContent = "もう一度押すと全データを消去"; setTimeout(() => { armed = false; e.target.textContent = "最初からやり直す"; }, 4000); return; } window.resetDemo(); }; }
   $$("#tabs button").forEach((b) => (b.onclick = () => showTab(b.dataset.tab)));
   $("#projectSelect").onchange = (e) => selectProject(e.target.value);
   await loadProjects();
@@ -47,7 +52,7 @@ async function loadProjects() {
   $("#projectSelect").innerHTML = `<option value="">（新しい案件を作成）</option>` + S.projects.map((p) => `<option value="${p.id}" ${p.id === S.pid ? "selected" : ""}>${esc(p.name)}｜${p.flowType === "NO_KEYMAN_NAME" ? "①名なし" : "②名あり"}</option>`).join("");
 }
 async function selectProject(id) {
-  S.pid = id; localStorage.setItem("pid", id); S.proposal = null; S.sel4 = new Set(); T7.flowType = null; T7.sel = null; T7.scene = "";
+  S.pid = id; lsSet("pid", id); S.proposal = null; S.sel4 = new Set(); T7.flowType = null; T7.sel = null; T7.scene = "";
   await refresh();
 }
 async function refresh() {
@@ -267,7 +272,7 @@ function renderT3() {
         </div>
       </div>
       ${an.aiEnabled ? `<p class="small muted">AI生成：商材情報・資料・ナレッジを外部AI（Anthropic API）へ送信して生成します。実運用データの送信可否を確認のうえご利用ください。</p>`
-        : `<div class="infobox">AIのAPIキーが未設定のため<b>AI生成はできません</b>。代わりに入力値を差し込む<b>DEMOテンプレート</b>で生成します（承認済みノウハウではありません）。</div>`}
+        : `<div class="infobox">${S.meta.staticDemo ? "この公開デモでは<b>AI生成は使えません</b>（AIを使うにはサーバー版を ANTHROPIC_API_KEY を設定して起動します）" : "AIのAPIキーが未設定のため<b>AI生成はできません</b>"}。代わりに入力値を差し込む<b>DEMOテンプレート</b>で生成します（承認済みノウハウではありません）。</div>`}
       ${an.impact.length ? `<div class="badbox">生成後に案件条件が変わりました。影響する場面：${an.impact.map((i) => `<b>${esc(i.sceneId)}</b>（${esc(i.changedFields.join("・"))}）`).join("、")} <button class="btn small" id="regenImpact">影響場面だけ再生成</button></div>` : ""}
       ${an.questions.totalMissing ? `<div class="infobox">未入力の確認事項が ${an.questions.totalMissing} 件あります。未入力箇所は【要確認】として残ります。 <button class="btn sec small" data-tab-go="t2">情報入力へ</button></div>` : ""}
       <div class="grid2">
@@ -392,7 +397,8 @@ function renderT5() {
     </div>
     <div class="panel">
       <div class="row noprint" style="justify-content:space-between"><h2 style="margin:0">v${v.version} ${esc(S.an.project.name)}｜${esc(S.an.flow.label)}</h2>
-        <div class="row"><a class="btn sec" style="text-decoration:none" href="/api/scripts/${S.script.id}/export.md?version=${v.version}">Markdownで出力</a><button class="btn ghost" onclick="window.print()">印刷</button></div></div>
+        <div class="row"><button class="btn sec" id="showMd" type="button">Markdownを表示</button>${S.meta.staticDemo ? "" : `<a class="btn ghost" style="text-decoration:none" href="/api/scripts/${S.script.id}/export.md?version=${v.version}">ダウンロード</a><button class="btn ghost" type="button" onclick="window.print()">印刷</button>`}</div></div>
+      <div id="mdPanel" class="mdpanel noprint" hidden><div class="row" style="justify-content:space-between"><b>Markdown（v${v.version}）</b><div class="row"><button class="btn small" id="copyMd" type="button">全文をコピー</button><button class="btn ghost small" id="closeMd" type="button">閉じる</button></div></div><textarea id="mdText" readonly></textarea></div>
       <p class="small muted">承認済みの場面：${approved}/${v.scenes.length}。〔 〕は架電時に差し込む変数、【要確認】は未確定の情報、<mark>マーカー</mark>は強調して話す言葉です。</p>
       <div class="briefing" id="briefing"><span class="muted small">読み込み中…</span></div>
       <div class="contents"><b>Contents</b>${S.meta.chapters.filter((c) => v.scenes.some((s) => c.scenes.includes(s.sceneId))).map((c) => `<a href="#ch-${c.id}">${esc(c.label)}</a>`).join("")}</div>
@@ -404,6 +410,13 @@ function renderT5() {
     const list = (xs, empty) => `<ul>${(xs.length ? xs : [empty]).map((x) => `<li>${esc(x)}</li>`).join("")}</ul>`;
     box.innerHTML = `<div><h4>注意事項</h4>${list(b.notes, "なし")}</div><div><h4>変更点</h4>${list(b.changes, "なし")}</div><div><h4>ポイント</h4>${list(b.points, "未入力（情報入力の「オペレーター向けの注意事項・ポイント」）")}</div>`;
   }).catch(() => {});
+  $("#showMd").onclick = () => run(async () => {
+    const res = await fetch(`/api/scripts/${S.script.id}/export.md?version=${v.version}`);
+    if (!res.ok) throw new Error("Markdownを作成できませんでした");
+    $("#mdText").value = await res.text(); $("#mdPanel").hidden = false; $("#mdPanel").scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+  $("#closeMd").onclick = () => { $("#mdPanel").hidden = true; };
+  $("#copyMd").onclick = () => { const t = $("#mdText"); (navigator.clipboard ? navigator.clipboard.writeText(t.value) : Promise.reject()).then(() => toast("コピーしました"), () => { t.focus(); t.select(); toast("自動コピーできないため全文を選択しました。Ctrl+C（⌘C）でコピーしてください"); }); };
   $$("[data-view]", el).forEach((b) => (b.onclick = () => { el._view = Number(b.dataset.view); renderT5(); }));
   $$("[data-revert]", el).forEach((b) => (b.onclick = () => run(async () => { await api(`/api/scripts/${S.script.id}/revert`, { method: "POST", body: { version: Number(b.dataset.revert) } }); el._view = undefined; await refresh(); toast("元に戻しました（新しい版として保存）"); })));
   $$("[data-approve]", el).forEach((b) => (b.onclick = () => run(async () => { await api(`/api/scripts/${S.script.id}/approve`, { method: "POST", body: { version: Number(b.dataset.approve) } }); await refresh(); toast("承認版にしました"); })));

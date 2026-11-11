@@ -2,21 +2,14 @@ import express, { type NextFunction, type Request, type Response } from "express
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import Anthropic from "@anthropic-ai/sdk";
-import { FLOWS, FLOW_DIFFERENCES, FLOW_LABEL, type FlowType } from "./domain/flowModel.js";
-import { CHAPTERS, FIELDS, SCENES } from "./domain/scenes.js";
-import { coverageFor } from "./domain/selection.js";
 import { Store } from "./store.js";
 import { ClaudeScriptAi, MODEL, AiOutputError, AiUnavailableError, type ScriptAi } from "./ai/claude.js";
 import { HttpError, Service } from "./service.js";
-import { PRINCIPLE_MAPPINGS, SOURCE_MATERIALS, UNUSED_SHEET_DIFFS } from "./domain/sources.js";
+import { dispatch, type FlowLayout, type RouteContext } from "./routes.js";
 import fs from "node:fs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const LAYOUT = JSON.parse(fs.readFileSync(path.join(__dirname, "..", "source", "flow-layout.json"), "utf8")) as {
-  source_file: string;
-  sheets: { sheet_name: string; shapes: unknown[]; connectors: unknown[] }[];
-  excluded_sheets: unknown[];
-};
+const LAYOUT = JSON.parse(fs.readFileSync(path.join(__dirname, "..", "source", "flow-layout.json"), "utf8")) as FlowLayout;
 
 export function createApp(service: Service) {
   const app = express();
@@ -37,58 +30,17 @@ export function createApp(service: Service) {
 
   app.use(express.static(path.join(__dirname, "..", "public")));
 
-  type Req = Request<Record<string, string>>;
-  const h = (fn: (req: Req, res: Response) => unknown) => async (req: Req, res: Response, next: NextFunction) => {
-    try { const out = await fn(req, res); if (!res.headersSent) res.json(out === undefined ? { ok: true } : out); } catch (e) { next(e); }
-  };
-
-  app.get("/api/meta", h(() => ({
-    aiEnabled: service.ai.enabled,
-    model: service.ai.enabled ? MODEL : null,
-    flows: Object.values(FLOWS).map((f) => ({ flowType: f.flowType, sheetName: f.sheetName, shortName: f.shortName, description: f.description, nodeCount: f.nodes.length, edgeCount: f.edges.length })),
-    differences: FLOW_DIFFERENCES,
-    scenes: SCENES,
-    chapters: CHAPTERS,
-    fields: FIELDS,
-  })));
-  app.get("/api/flows/:flowType", h((req) => {
-    const f = FLOWS[req.params.flowType as FlowType];
-    if (!f) throw new HttpError(404, "フローが見つかりません");
-    const layout = LAYOUT.sheets.find((x) => x.sheet_name === f.sheetName);
-    return { ...f, label: FLOW_LABEL[f.flowType], coverage: coverageFor(f.flowType), layout, layoutSource: LAYOUT.source_file };
-  }));
-
-  app.get("/api/sources", h(() => ({ materials: SOURCE_MATERIALS, principles: PRINCIPLE_MAPPINGS, excludedSheets: LAYOUT.excluded_sheets, unusedDiffs: UNUSED_SHEET_DIFFS })));
-  app.get("/api/projects", h(() => service.store.data.projects.map((p) => ({ id: p.id, name: p.name, flowType: p.flowType, updatedAt: p.updatedAt, hasScript: !!service.store.scriptOf(p.id) }))));
-  app.post("/api/projects", h((req) => service.createProject(req.body)));
-  app.get("/api/projects/:id", h((req) => service.analysis(req.params.id)));
-  app.put("/api/projects/:id", h((req) => service.updateProject(req.params.id, req.body)));
-  app.post("/api/projects/:id/duplicate", h((req) => service.duplicateProject(req.params.id, req.body ?? {})));
-  app.post("/api/projects/:id/documents", h((req) => service.addDocument(req.params.id, req.body)));
-  app.delete("/api/projects/:id/documents/:docId", h((req) => service.removeDocument(req.params.id, req.params.docId)));
-  app.post("/api/projects/:id/generate", h((req) => service.generate(req.params.id, req.body ?? {})));
-  app.get("/api/projects/:id/script", h((req) => service.store.scriptOf(req.params.id) ?? null));
-
-  app.post("/api/scripts/:id/revisions", h((req) => service.proposeRevision(req.params.id, req.body)));
-  app.post("/api/revisions/:id/apply", h((req) => service.applyRevision(req.params.id, req.body?.indexes)));
-  app.post("/api/revisions/:id/reject", h((req) => service.rejectRevision(req.params.id)));
-  app.put("/api/scripts/:id/scenes/:sceneId", h((req) => service.manualEdit(req.params.id, req.params.sceneId, req.body.caseId, req.body.style, String(req.body.text ?? ""))));
-  app.post("/api/scripts/:id/scenes/:sceneId/status", h((req) => service.setSceneStatus(req.params.id, req.params.sceneId, req.body.status)));
-  app.post("/api/scripts/:id/revert", h((req) => service.revert(req.params.id, Number(req.body.version))));
-  app.post("/api/scripts/:id/approve", h((req) => service.approveVersion(req.params.id, Number(req.body.version))));
-  app.get("/api/scripts/:id/briefing", h((req) => service.briefing(req.params.id, req.query.version ? Number(req.query.version) : undefined)));
-  app.get("/api/scripts/:id/compare", h((req) => service.compareVersions(req.params.id, Number(req.query.a), Number(req.query.b))));
-  app.get("/api/scripts/:id/export.md", (req, res, next) => {
+  const ctx: RouteContext = { service, layout: LAYOUT, model: MODEL };
+  app.all(/^\/api\//, async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const md = service.exportMarkdown(req.params.id, req.query.version ? Number(req.query.version) : undefined);
-      res.setHeader("Content-Type", "text/markdown; charset=utf-8");
-      res.setHeader("Content-Disposition", `attachment; filename="script-${req.params.id}.md"`);
-      res.send(md);
+      const out = await dispatch(ctx, { method: req.method, path: req.path, query: req.query as Record<string, string>, body: req.body });
+      if ("text" in out) {
+        res.setHeader("Content-Type", out.contentType);
+        if (out.filename) res.setHeader("Content-Disposition", `attachment; filename="${out.filename}"`);
+        res.send(out.text);
+      } else res.json(out.json);
     } catch (e) { next(e); }
   });
-
-  app.get("/api/knowledge", h(() => service.store.data.knowledge));
-  app.post("/api/knowledge", h((req) => service.upsertKnowledge(req.body)));
 
   app.use((err: unknown, _req: Request, res: Response, _next: NextFunction) => {
     if (err instanceof HttpError) return res.status(err.status).json({ error: err.message });
