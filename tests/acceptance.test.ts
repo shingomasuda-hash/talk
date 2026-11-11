@@ -185,7 +185,8 @@ describe("両フロー共通", () => {
 
   it("T23 承認済みノウハウなし：AI提案/DEMOと確定ノウハウを区別", async () => {
     const { scenes, svc } = await gen("NO_KEYMAN_NAME");
-    expect(svc.store.data.knowledge.some((k) => k.status === "CONFIRMED")).toBe(false);
+    // 承認済みナレッジは該当場面のものだけ。DEMO生成はナレッジを使わず、出力は確定ノウハウと表示しない
+    expect(svc.store.data.knowledge.filter((k) => k.status === "CONFIRMED").map((k) => k.id).sort()).toEqual(["kn_seed_opening_structure", "kn_seed_precheck_objection"]);
     expect(scenes.every((s) => s.reviewStatus === "DEMO" && s.generatedBy === "demo")).toBe(true);
     const md = svc.exportMarkdown(svc.store.data.scripts[0].id);
     expect(md).toContain("DEMO（テンプレート生成・未承認）");

@@ -3,7 +3,7 @@ import fs from "node:fs";
 import path from "node:path";
 import crypto from "node:crypto";
 import type { KnowledgeEntry, Project, RevisionProposal, Script } from "./domain/types.js";
-import { SEED_KNOWLEDGE } from "./domain/knowledgeSeed.js";
+import { SEED_KNOWLEDGE, SEED_ORIGINAL_AT } from "./domain/knowledgeSeed.js";
 
 export interface Db {
   projects: Project[];
@@ -20,7 +20,12 @@ export class Store {
       const loaded = JSON.parse(fs.readFileSync(file, "utf8")) as Partial<Db>;
       this.db = { ...this.db, ...loaded };
       // 後から追加された初期ナレッジを既存データにも足す（既存の編集内容は上書きしない）
-      for (const k of SEED_KNOWLEDGE) if (!this.db.knowledge.some((x) => x.id === k.id)) this.db.knowledge.push(structuredClone(k));
+      for (const k of SEED_KNOWLEDGE) {
+        const cur = this.db.knowledge.find((x) => x.id === k.id);
+        if (!cur) this.db.knowledge.push(structuredClone(k));
+        // 初期値のまま（ユーザー未編集）の項目は、承認などの更新を反映する
+        else if (cur.updatedAt === SEED_ORIGINAL_AT && k.updatedAt !== SEED_ORIGINAL_AT) Object.assign(cur, structuredClone(k));
+      }
     }
   }
   get data(): Db { return this.db; }

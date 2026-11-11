@@ -6,6 +6,10 @@
 import type { KnowledgeEntry } from "./types.js";
 
 const at = "2026-11-11T00:00:00.000Z";
+/** ユーザーが承認した日（2026-11-11 のチャットでの指示） */
+const APPROVED_AT = "2026-11-11T12:00:00.000Z";
+/** 承認前の初期値の更新日時（既存データの移行判定に使う） */
+export const SEED_ORIGINAL_AT = at;
 
 export const SEED_KNOWLEDGE: KnowledgeEntry[] = [
   {
@@ -64,20 +68,20 @@ export const SEED_KNOWLEDGE: KnowledgeEntry[] = [
     conditions: "受付突破・キーマンへの最初の挨拶",
     exceptions: "",
     exampleTalk: "（お忙しいところ申し訳ございません）〇〇の〇〇と申します。〇〇が〇〇なのでお電話させていただいたのですが、〇〇は〇〇でしょうか？",
-    source: "優先1シート「利用イメージ」画面案（【受付突破】【キーマンへの最初の挨拶】の例文）",
-    status: "NEEDS_CONFIRMATION",
-    updatedAt: at,
+    source: "優先1シート「利用イメージ」画面案（【受付突破】【キーマンへの最初の挨拶】の例文）。2026-11-11 ユーザー承認",
+    status: "CONFIRMED",
+    updatedAt: APPROVED_AT,
   },
   {
     id: "kn_seed_precheck_objection",
     sceneIds: ["S03", "S11", "S15"],
     principle: "よくある断り文句は、事前に調べられる事実で先回りし、その事実を『電話した理由』に変える",
     reason: "断られる理由そのものを用件にすると、同じ断り文句で終わらずに話を聞いてもらえるため",
-    conditions: "特定の断り文句（例：「テイクアウトはやっていないから不要」）が繰り返し発生する施策",
+    conditions: "特定の断り文句（例：「テイクアウトはやっていないから不要」）が繰り返し発生する施策。確認する情報は案件の「架電前に事前確認できる情報」に入力する",
     exceptions: "事前確認できない情報の場合は使えない（推測で決めつけない）",
     exampleTalk: "（食べログ等でテイクアウト未実施を確認した店舗に）「テイクアウトはやってらっしゃらないですよね？（だからお電話しました）」",
-    source: "優先1シート「実現したいこと」の課題と回答例（人間の回答例として記載）",
-    status: "NEEDS_CONFIRMATION",
-    updatedAt: at,
+    source: "優先1シート「実現したいこと」の課題と回答例（人間の回答例として記載）。2026-11-11 ユーザー承認",
+    status: "CONFIRMED",
+    updatedAt: APPROVED_AT,
   },
 ];

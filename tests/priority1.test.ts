@@ -32,7 +32,7 @@ describe("Contents（章立て）", () => {
     const all = CHAPTERS.flatMap((c) => c.scenes);
     expect(new Set(all).size).toBe(all.length);
     expect(all.sort()).toEqual(SCENES.map((s) => s.sceneId).sort());
-    expect(CHAPTERS.map((c) => c.label)).toEqual(["受付突破", "最初の挨拶", "主旨説明・ニーズ喚起", "クロージング", "ヒアリング"]);
+    expect(CHAPTERS.map((c) => c.label)).toEqual(["受付突破", "最初の挨拶", "主旨説明・ニーズ喚起", "ヒアリング", "クロージング"]);
   });
   it("Markdown出力は注意事項・変更点・ポイントとContentsが先頭、章ごとに場面が並ぶ", async () => {
     const svc = newService();
@@ -46,6 +46,7 @@ describe("Contents（章立て）", () => {
     expect(i("# 【受付突破】")).toBeLessThan(i("# 【最初の挨拶】"));
     expect(i("## S01")).toBeGreaterThan(i("# 【受付突破】"));
     expect(i("## S03")).toBeGreaterThan(i("# 【最初の挨拶】"));
+    expect(i("# 【ヒアリング】")).toBeLessThan(i("# 【クロージング】"));
     expect(md).toContain("短い版（一言）");
   });
 });
@@ -147,10 +148,32 @@ describe("強調表示（**語**）", () => {
 });
 
 describe("初期ナレッジ（優先1シート由来）", () => {
-  it("例文の構成と事前確認の切り返しが要確認として登録されている", () => {
+  it("例文の構成と事前確認の切り返しは承認済み、その他の初期ナレッジは要確認", () => {
     const svc = newService();
-    const ids = svc.store.data.knowledge.map((k) => k.id);
-    expect(ids).toEqual(expect.arrayContaining(["kn_seed_opening_structure", "kn_seed_precheck_objection"]));
-    expect(svc.store.data.knowledge.every((k) => k.status === "NEEDS_CONFIRMATION")).toBe(true);
+    const st = Object.fromEntries(svc.store.data.knowledge.map((k) => [k.id, k.status]));
+    expect(st.kn_seed_opening_structure).toBe("CONFIRMED");
+    expect(st.kn_seed_precheck_objection).toBe("CONFIRMED");
+    expect(Object.entries(st).filter(([k]) => !["kn_seed_opening_structure", "kn_seed_precheck_objection"].includes(k)).every(([, v]) => v === "NEEDS_CONFIRMATION")).toBe(true);
+  });
+  it("既存データの未編集の初期ナレッジには承認が反映され、ユーザー編集済みのものは上書きしない", async () => {
+    const fs = await import("node:fs");
+    const os = await import("node:os");
+    const path = await import("node:path");
+    const { Store } = await import("../src/store.js");
+    const { SEED_KNOWLEDGE, SEED_ORIGINAL_AT } = await import("../src/domain/knowledgeSeed.js");
+    const file = path.join(fs.mkdtempSync(path.join(os.tmpdir(), "kn-")), "db.json");
+    const old = SEED_KNOWLEDGE.map((k) => ({ ...k, status: "NEEDS_CONFIRMATION", updatedAt: SEED_ORIGINAL_AT }));
+    old.find((k) => k.id === "kn_seed_precheck_objection")!.updatedAt = "2026-11-12T00:00:00.000Z"; // ユーザーが編集済み
+    fs.writeFileSync(file, JSON.stringify({ projects: [], scripts: [], proposals: [], knowledge: old }));
+    const st = Object.fromEntries(new Store(file).data.knowledge.map((k) => [k.id, k.status]));
+    expect(st.kn_seed_opening_structure).toBe("CONFIRMED");
+    expect(st.kn_seed_precheck_objection).toBe("NEEDS_CONFIRMATION");
+  });
+  it("事前確認できる情報は最初の挨拶・主旨説明・断り対応の入力になり、変更で再生成候補になる", async () => {
+    const svc = newService();
+    const p = project(svc, "NO_KEYMAN_NAME");
+    await svc.generate(p.id);
+    svc.updateProject(p.id, { answers: { preCheckFacts: "食べログでテイクアウト実施有無を確認" } });
+    expect(svc.analysis(p.id).impact.map((i) => i.sceneId).sort()).toEqual(["S03", "S11", "S15"]);
   });
 });

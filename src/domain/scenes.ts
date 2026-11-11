@@ -26,7 +26,8 @@ export type ProjectField =
   | "emailContent"
   | "evidence"
   | "ngExpressions"
-  | "operatorPoints";
+  | "operatorPoints"
+  | "preCheckFacts";
 
 export interface SceneCase {
   caseId: string;
@@ -111,7 +112,7 @@ export const SCENES: SceneDefinition[] = [
     occurrence: "キーマンが受電／受付から本人へつながった直後",
     purpose: "本人確認・名乗り・電話の主旨を短く伝え、話を続けてよいか確認する",
     requiredInputs: ["callerCompany", "productName", "callReason"],
-    optionalInputs: ["contactHistory", "listOrigin", "targetRole"],
+    optionalInputs: ["contactHistory", "listOrigin", "targetRole", "preCheckFacts"],
     conditions: ["名あり／名なし", "既存接点の有無", "本人であることの確認"],
     avoid: ["受付向けの取次ぎ文言を挟む", "一方的に長く話し始める"],
     cases: [
@@ -272,7 +273,7 @@ export const SCENES: SceneDefinition[] = [
     occurrence: "キーマンと対話し、話を続けてよいと言われたとき",
     purpose: "電話の主旨と相手にとっての価値を、資料にある事実に基づいて簡潔に伝える",
     requiredInputs: ["productName", "productSummary", "valueProps", "callReason"],
-    optionalInputs: ["evidence", "targetIndustry", "targetRole", "contactHistory"],
+    optionalInputs: ["evidence", "targetIndustry", "targetRole", "contactHistory", "preCheckFacts"],
     conditions: ["商材", "顧客にとっての価値", "電話理由", "相手の役割"],
     avoid: ["根拠のない実績・数値・料金", "一般論の羅列", "長い独演"],
     cases: [
@@ -344,7 +345,7 @@ export const SCENES: SceneDefinition[] = [
     occurrence: "キーマンから商談・資料とも不要と言われたとき",
     purpose: "断りを受け止め、次回連絡の可否を一度だけ確認する。不可の場合は理由別に尊重して終話する",
     requiredInputs: ["callerCompany"],
-    optionalInputs: ["productName"],
+    optionalInputs: ["productName", "preCheckFacts"],
     conditions: ["次回コール可否", "断り理由（会社要因／担当要因）", "連絡不可の意思"],
     avoid: ["無根拠な反論", "次回コール不可・クレーム後の再勧誘", "相手の判断を否定する"],
     cases: [
@@ -416,15 +417,15 @@ export const SCENE_MAP: Record<string, SceneDefinition> = Object.fromEntries(SCE
 
 /**
  * 完成版スクリプトの目次（Contents）。
- * 優先1シート「利用イメージ」の画面案の並び（受付突破／最初の挨拶／主旨説明／ニーズ喚起／クロージング／ヒアリング）に合わせる。
+ * 優先1シート「利用イメージ」の画面案の章を、ユーザー指示（2026-11-11）によりヒアリングをクロージングの前に置いた順で並べる。
  * 主旨説明とニーズ喚起は S11 で一体のため1章にまとめた。
  */
 export const CHAPTERS: { id: string; label: string; scenes: string[] }[] = [
   { id: "reception", label: "受付突破", scenes: ["S01", "S02", "S04", "S05", "S06", "S07", "S08", "S09", "S10", "S18"] },
   { id: "greeting", label: "最初の挨拶", scenes: ["S03"] },
   { id: "pitch", label: "主旨説明・ニーズ喚起", scenes: ["S11"] },
-  { id: "closing", label: "クロージング", scenes: ["S13", "S14", "S15", "S16", "S17"] },
   { id: "hearing", label: "ヒアリング", scenes: ["S12"] },
+  { id: "closing", label: "クロージング", scenes: ["S13", "S14", "S15", "S16", "S17"] },
 ];
 export const CHAPTER_OF: Record<string, string> = Object.fromEntries(CHAPTERS.flatMap((c) => c.scenes.map((s) => [s, c.label])));
 
@@ -499,6 +500,10 @@ export const FIELDS: FieldDefinition[] = [
   { key: "evidence", label: "実績・数値・事例（根拠あり）", kind: "longtext", priority: 5,
     question: "トークで使ってよい実績・数値・事例はありますか（出典つきで）。",
     purpose: "事実に基づく主旨説明。ここにない数値は生成しない", sufficient: "出典の分かる事実", followUp: "社名を出してよい事例ですか。" },
+  { key: "preCheckFacts", label: "架電前に事前確認できる情報（よくある断りへの先回り）", kind: "longtext", priority: 4,
+    question: "よくある断り文句のうち、架電前に調べて先回りできるものはありますか。何を・どこで確認し、確認結果をどう使いますか（例：食べログでテイクアウト実施有無を確認→未実施の店舗には『テイクアウトはやってらっしゃらないですよね？』と切り出す）。",
+    purpose: "最初の挨拶・主旨説明で『電話した理由』を相手の事実に合わせ、断り（S15）を先回りする", sufficient: "断り文句・確認する情報・確認方法・確認結果ごとの使い方", followUp: "確認できなかった相手にはどう話しますか。",
+    contradictionCheck: "確認できない情報を前提にしたトークになっていないか" },
   { key: "operatorPoints", label: "オペレーター向けの注意事項・ポイント", kind: "longtext", priority: 5,
     question: "オペレーターがスクリプトを使う前に知っておくべき注意事項・ポイントはありますか（例：〇〇とは言わない、△△を必ず確認）。",
     purpose: "完成版スクリプトの冒頭『注意事項・変更点・ポイント』に表示", sufficient: "箇条書きで1〜5点", followUp: "特に強調したい言葉はありますか。" },
