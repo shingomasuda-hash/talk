@@ -44,7 +44,10 @@ async function boot() {
   $$("#tabs button").forEach((b) => (b.onclick = () => showTab(b.dataset.tab)));
   $("#projectSelect").onchange = (e) => selectProject(e.target.value);
   await loadProjects();
-  if (S.pid && S.projects.some((p) => p.id === S.pid)) await selectProject(S.pid); else renderAll();
+  // 公開デモは初回からサンプル案件（生成済み）を開いた状態で見せる
+  const first = S.meta.staticDemo && !S.projects.some((p) => p.id === S.pid) ? S.projects[0] : null;
+  if (first) { await selectProject(first.id); showTab("t5"); toast("サンプル案件（架空の商材）を表示しています。上の選択欄で①／②を切り替えられます"); }
+  else if (S.pid && S.projects.some((p) => p.id === S.pid)) await selectProject(S.pid); else renderAll();
 }
 function showTab(id) { $$("#tabs button").forEach((b) => b.classList.toggle("active", b.dataset.tab === id)); $$(".tab").forEach((t) => t.classList.toggle("active", t.id === id)); }
 async function loadProjects() {
