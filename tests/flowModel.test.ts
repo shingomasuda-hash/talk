@@ -49,3 +49,23 @@ describe("フロー読解と抽出データの整合", () => {
     }
   });
 });
+
+describe("原本Excelから抽出した座標データ（source/flow-layout.json）", () => {
+  const layout = JSON.parse(fs.readFileSync(new URL("../source/flow-layout.json", import.meta.url), "utf8"));
+  it("採用2シートのみ・不採用2シートは除外として記録", () => {
+    expect(layout.sheets.map((s: { sheet_name: string }) => s.sheet_name)).toEqual(["①キーマン名なしリスト", "②キーマン名ありリスト"]);
+    expect(layout.excluded_sheets.every((s: { sheet_name: string }) => s.sheet_name.startsWith("使用しない"))).toBe(true);
+  });
+  for (const flow of Object.values(FLOWS)) {
+    it(`${flow.sheetName}: 原本の図形・ラベル・接続線がフローモデルと一致し、矢印は無い`, () => {
+      const sh = layout.sheets.find((s: { sheet_name: string }) => s.sheet_name === flow.sheetName);
+      for (const n of flow.nodes) expect(sh.shapes.find((x: { id: string }) => x.id === n.shapeId)?.text, n.shapeId).toBe(n.label);
+      expect(sh.shapes.length).toBe(flow.nodes.length);
+      for (const e of flow.edges) {
+        const c = sh.connectors.find((x: { id: string }) => x.id === e.connectorId);
+        expect([c.st, c.en].sort()).toEqual([e.from, e.to].sort());
+        expect(c.arrowHead ?? c.arrowTail ?? null).toBeNull();
+      }
+    });
+  }
+});

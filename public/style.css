@@ -69,3 +69,21 @@ th { background: #f2f4f7; font-weight: 600; position: sticky; top: 0; }
   .tab { display: none !important; } #t5 { display: block !important; }
   .panel, .scene { border: 0; } body { background: #fff; }
 }
+
+/* コールフロー図 */
+.flowwrap { display: grid; grid-template-columns: 1fr 340px; gap: 14px; }
+@media (max-width: 1000px) { .flowwrap { grid-template-columns: 1fr; } }
+.flowcanvas { overflow: auto; border: 1px solid var(--line); border-radius: 8px; background: #fff; max-height: 72vh; }
+.flowcanvas svg { display: block; }
+.flowcanvas .node { cursor: pointer; }
+.flowcanvas .node rect { stroke: #5b6576; stroke-width: 1; }
+.flowcanvas .node.sel rect { stroke: #d92d20; stroke-width: 3; }
+.flowcanvas .node.hl rect { stroke: #1f5fbf; stroke-width: 3; }
+.flowcanvas .node.dim { opacity: .28; }
+.flowcanvas .node.cls-N rect, .flowcanvas .node.cls-F rect { stroke-dasharray: 4 3; }
+.flowcanvas text { font-size: 11.5px; fill: #1d2433; pointer-events: none; }
+.flowcanvas .edge { fill: none; stroke: #8a93a3; stroke-width: 1.2; }
+.flowcanvas .edge.hl { stroke: #d92d20; stroke-width: 2.2; }
+.legend span { display: inline-flex; align-items: center; gap: 4px; margin-right: 10px; font-size: 12px; }
+.legend i { width: 14px; height: 12px; border: 1px solid #5b6576; display: inline-block; border-radius: 2px; }
+.detail .talk { font-size: 13px; }

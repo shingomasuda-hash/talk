@@ -1,6 +1,6 @@
 # 05. 受け入れテスト（T01〜T26）
 
-自動テスト：`npm test`（`tests/acceptance.test.ts`・`tests/flowModel.test.ts`・`tests/ai.test.ts`、計62件）。
+自動テスト：`npm test`（`tests/acceptance.test.ts`・`tests/flowModel.test.ts`・`tests/ai.test.ts`、計65件）。
 自動テストは **DEMO生成（決定的テンプレート）とモックAI** で、場面選択・ケース分岐・ガードレール・差分適用を検証する。**実AIの文面品質は自動テストでは保証しない**（下表「実AI」列）。
 
 | No. | シナリオ | 自動テストで確認したこと | 結果（DEMO/モック） | 実AI |

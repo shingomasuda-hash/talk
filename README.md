@@ -45,7 +45,8 @@ ANTHROPIC_API_KEY=sk-ant-... npm start
 3. 「② 情報入力」で項目を変更（例：リストの来歴→既存顧客）すると、③に影響場面と「影響場面だけ再生成」が出ます。
 4. 「④ スクリプト修正」で場面を選び「短く」等を指示 → 差分 → 採用。手編集・場面の承認も可能。
 5. 「⑤ 完成版・履歴・出力」で版の比較・元に戻す・承認版・Markdown出力・印刷・場面コピー。
-6. 「ナレッジ」で承認済みノウハウ（原則→理由→適用条件→例外→具体トーク）を登録すると、AI生成で優先参照されます。
+6. 「コールフロー図・資料」で原本Excelの図形配置を再現した図を確認できます。図形をクリックすると分類・扱い・前後の状況・関連する場面と生成済みトークを表示し、場面を選ぶと該当図形を強調します。参照資料の受領状況と、ChatGPTプロジェクト指示書の各原則と実装の対応表もここにあります。
+7. 「ナレッジ」で承認済みノウハウ（原則→理由→適用条件→例外→具体トーク）を登録すると、AI生成で優先参照されます。
 
 DEMOの全文をターミナルで見る：
 
@@ -63,6 +64,12 @@ npm test
 npm run typecheck
 ```
 
+原本Excelから座標データを再抽出（Excel更新時）：
+
+```bash
+python3 -I scripts/extract_callflow.py "テレアポのコールフロー（①キーマン名なし、②キーマン名あり）.xlsx" source/flow-layout.json
+```
+
 フロー一覧・網羅マトリクスの再生成（`src/domain/flowModel.ts` 変更時）：
 
 ```bash
@@ -73,6 +80,9 @@ npm run gen:docs
 
 ```
 source/flow-extraction.json   最新版Excelの図形・接続線の抽出データ（96図形／89接続線）
+source/flow-layout.json       原本Excelから再抽出した座標つき図形・接続線（図の描画に使用）
+source/project-instructions.md ChatGPTプロジェクト指示書（docx）の本文抽出
+src/domain/sources.ts         参照資料の受領状況・指示書の原則と実装の対応表
 src/domain/flowModel.ts       2フローの読解済み構造（分類S/D/I/R/F・向き・関連場面・要確認）
 src/domain/scenes.ts          発話場面カタログ S01〜S18（ケース・元図形・必要入力・ガードレール）と入力項目
 src/domain/selection.ts       場面選択・不足質問・矛盾・影響判定・網羅表

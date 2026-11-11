@@ -43,7 +43,7 @@ async function loadProjects() {
   $("#projectSelect").innerHTML = `<option value="">（新しい案件を作成）</option>` + S.projects.map((p) => `<option value="${p.id}" ${p.id === S.pid ? "selected" : ""}>${esc(p.name)}｜${p.flowType === "NO_KEYMAN_NAME" ? "①名なし" : "②名あり"}</option>`).join("");
 }
 async function selectProject(id) {
-  S.pid = id; localStorage.setItem("pid", id); S.proposal = null; S.sel4 = new Set();
+  S.pid = id; localStorage.setItem("pid", id); S.proposal = null; S.sel4 = new Set(); T7.flowType = null; T7.sel = null; T7.scene = "";
   await refresh();
 }
 async function refresh() {
@@ -53,7 +53,7 @@ async function refresh() {
   $("#projectSelect").value = S.pid;
   renderAll();
 }
-function renderAll() { renderT1(); renderT2(); renderT3(); renderT4(); renderT5(); renderT6(); }
+function renderAll() { renderT1(); renderT2(); renderT3(); renderT4(); renderT5(); renderT6(); renderT7(); }
 const needProject = (el) => { if (!S.an) { el.innerHTML = `<div class="panel muted">先に「① 案件・フロー」で案件を作成・選択してください。</div>`; return true; } return false; };
 
 // ---------------------------------------------------------------- ① 案件・フロー
@@ -261,7 +261,7 @@ function renderT3() {
         ${[["all", "すべて"], ["GENERATED", `生成対象 ${covCount("GENERATED")}`], ["NO_SCRIPT", `台本不要 ${covCount("NO_SCRIPT")}`], ["EXCLUDED_BY_CONDITION", `条件で対象外 ${covCount("EXCLUDED_BY_CONDITION")}`], ["NEEDS_CONFIRMATION", `要確認 ${covCount("NEEDS_CONFIRMATION")}`], ["S", "S"], ["D", "D"], ["I", "I"], ["R", "R"]].map(([k, l]) => `<button class="btn ${filter === k ? "" : "ghost"} small" data-cov="${k}">${esc(l)}</button>`).join("")}
       </div>
       <div style="max-height:520px;overflow:auto"><table><tr><th>図形ID</th><th>ラベル</th><th>分類</th><th>前の状況</th><th>関連場面</th><th>網羅</th><th>この案件</th><th>扱い・理由</th></tr>
-        ${covRows.map((r) => `<tr><td>${esc(r.shapeId)}</td><td>${nl(r.label)}</td><td><span class="cls">${r.cls}</span> <span class="small muted">${CLS[r.cls]}</span></td><td class="small">${nl(r.parentLabel)}</td>
+        ${covRows.map((r) => `<tr><td><a href="#" data-openshape="${esc(r.shapeId)}" title="図で見る">${esc(r.shapeId)}</a></td><td>${nl(r.label)}</td><td><span class="cls">${r.cls}</span> <span class="small muted">${CLS[r.cls]}</span></td><td class="small">${nl(r.parentLabel)}</td>
           <td>${r.scenes.map((s) => `<a href="#sc-${s}">${s}</a>`).join(" ") || "—"}</td><td>${badge(COV[r.coverage])}</td><td>${badge(PST[r.projectStatus])}</td><td class="small">${esc(r.note)}</td></tr>`).join("")}</table></div>
     </div>`;
   const generate = (body, btn) => run(async () => {
@@ -275,6 +275,7 @@ function renderT3() {
   if ($("#regenImpact")) $("#regenImpact").onclick = (e) => generate({ sceneIds: an.impact.map((i) => i.sceneId) }, e.target);
   $$("[data-cov]", el).forEach((b) => (b.onclick = () => { el._covFilter = b.dataset.cov; renderT3(); }));
   $$("[data-tab-go]", el).forEach((b) => (b.onclick = () => showTab(b.dataset.tabGo)));
+  $$("[data-openshape]", el).forEach((a) => (a.onclick = (ev) => { ev.preventDefault(); openShape(an.project.flowType, a.dataset.openshape); }));
   bindCopy(el);
 }
 
@@ -405,6 +406,136 @@ async function renderT6() {
     await api("/api/knowledge", { method: "POST", body: { id: edit?.id, sceneIds: $("#kS").value.split(",").map((s) => s.trim()).filter(Boolean), status: $("#kSt").value, principle: $("#kP").value, reason: $("#kR").value, conditions: $("#kC").value, exceptions: $("#kE").value, exampleTalk: $("#kT").value, source: $("#kSrc").value } });
     el._edit = null; await renderT6(); toast("保存しました");
   }, e.target);
+}
+
+
+// ---------------------------------------------------------------- コールフロー図・資料
+const FCOL = { S: "#d6e6fb", D: "#fdeccd", I: "#d8f1e2", R: "#e6e8ec", N: "#ffffff", F: "#efe9fb" };
+const T7 = { flowType: null, flows: {}, sources: null, sel: null, scene: "", zoom: 0.95, arrows: true };
+async function loadFlow(ft) { if (!T7.flows[ft]) T7.flows[ft] = await api(`/api/flows/${ft}`); return T7.flows[ft]; }
+function wrapLabel(text, w) {
+  const per = Math.max(2, Math.floor((w - 6) / 11));
+  const out = [];
+  for (const line of String(text).split("\n")) { let l = line; while (l.length > per) { out.push(l.slice(0, per)); l = l.slice(per); } out.push(l); }
+  return out;
+}
+function sitePoint(sh, idx) {
+  // 長方形の接続点：0=上, 1=左, 2=下, 3=右
+  return [[sh.x + sh.w / 2, sh.y], [sh.x, sh.y + sh.h / 2], [sh.x + sh.w / 2, sh.y + sh.h], [sh.x + sh.w, sh.y + sh.h / 2]][idx ?? 2];
+}
+function elbow(p1, i1, p2, i2) {
+  const v1 = i1 === 0 || i1 === 2, v2 = i2 === 0 || i2 === 2;
+  if (v1 && v2) { const my = (p1[1] + p2[1]) / 2; return `M${p1[0]},${p1[1]} V${my} H${p2[0]} V${p2[1]}`; }
+  if (!v1 && !v2) { const mx = (p1[0] + p2[0]) / 2; return `M${p1[0]},${p1[1]} H${mx} V${p2[1]} H${p2[0]}`; }
+  return v1 ? `M${p1[0]},${p1[1]} V${p2[1]} H${p2[0]}` : `M${p1[0]},${p1[1]} H${p2[0]} V${p2[1]}`;
+}
+function openShape(ft, shapeId) { T7.flowType = ft; T7.sel = shapeId; showTab("t7"); renderT7(); }
+
+async function renderT7() {
+  const el = $("#t7");
+  const ft = T7.flowType || S.an?.project.flowType || "NO_KEYMAN_NAME";
+  let f, src;
+  try { [f, src] = await Promise.all([loadFlow(ft), T7.sources || api("/api/sources")]); T7.sources = src; }
+  catch (e) { el.innerHTML = `<div class="badbox">${esc(e.message)}</div>`; return; }
+  const nodes = new Map(f.nodes.map((n) => [n.shapeId, n]));
+  const shapes = new Map(f.layout.shapes.map((s) => [s.id, s]));
+  const cov = new Map(f.coverage.map((c) => [c.shapeId, c]));
+  const sameFlow = S.an && S.an.project.flowType === f.flowType;
+  const projCov = sameFlow ? new Map(S.an.coverage.map((c) => [c.shapeId, c])) : null;
+  const pad = 20;
+  const maxX = Math.max(...f.layout.shapes.map((s) => s.x + s.w)) + pad, maxY = Math.max(...f.layout.shapes.map((s) => s.y + s.h)) + pad;
+  const minX = Math.min(...f.layout.shapes.map((s) => s.x)) - pad, minY = Math.min(...f.layout.shapes.map((s) => s.y)) - pad;
+  const W = maxX - minX, H = maxY - minY;
+  const sel = T7.sel && nodes.has(T7.sel) ? T7.sel : null;
+  const sceneHit = (n) => T7.scene && n.scenes.includes(T7.scene);
+  const edgesSvg = f.edges.map((e) => {
+    const c = f.layout.connectors.find((x) => x.id === e.connectorId);
+    const a = shapes.get(c.st), b = shapes.get(c.en);
+    if (!a || !b) return "";
+    const d = elbow(sitePoint(a, c.stIdx), c.stIdx, sitePoint(b, c.enIdx), c.enIdx);
+    const forward = e.from === c.st; // 読解した向きが原本の始点→終点と同じか
+    const marker = T7.arrows ? (forward ? `marker-end="url(#arr)"` : `marker-start="url(#arrs)"`) : "";
+    const hl = sel && (e.from === sel || e.to === sel);
+    return `<path class="edge ${hl ? "hl" : ""}" d="${d}" ${marker}><title>コネクタ${e.connectorId}: ${esc(nodes.get(e.from).label.replace(/\n/g, ""))} → ${esc(nodes.get(e.to).label.replace(/\n/g, ""))}</title></path>`;
+  }).join("");
+  const nodesSvg = f.layout.shapes.map((sh) => {
+    const n = nodes.get(sh.id); if (!n) return "";
+    const lines = wrapLabel(sh.text, sh.w);
+    const lh = 13, y0 = sh.y + sh.h / 2 - ((lines.length - 1) * lh) / 2 + 4;
+    const pc = projCov?.get(sh.id);
+    const dim = (T7.scene && !sceneHit(n)) || (pc && pc.projectStatus === "EXCLUDED_BY_CONDITION");
+    return `<g class="node cls-${n.cls} ${sel === sh.id ? "sel" : ""} ${sceneHit(n) ? "hl" : ""} ${dim ? "dim" : ""}" data-shape="${sh.id}">
+      <rect x="${sh.x}" y="${sh.y}" width="${sh.w}" height="${sh.h}" rx="3" fill="${FCOL[n.cls]}"></rect>
+      ${lines.map((l, i) => `<text x="${sh.x + sh.w / 2}" y="${y0 + i * lh}" text-anchor="middle">${esc(l)}</text>`).join("")}
+      <title>${esc(sh.id)}［${CLS[n.cls]}］${esc(n.label)}</title></g>`;
+  }).join("");
+  const svg = `<svg width="${W * T7.zoom}" height="${H * T7.zoom}" viewBox="${minX} ${minY} ${W} ${H}" xmlns="http://www.w3.org/2000/svg">
+    <defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#8a93a3"/></marker>
+    <marker id="arrs" viewBox="0 0 10 10" refX="1" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M10,0 L0,5 L10,10 z" fill="#8a93a3"/></marker></defs>
+    ${edgesSvg}${nodesSvg}</svg>`;
+
+  // 詳細パネル
+  let detail = `<p class="muted small">図形をクリックすると、分類・扱い・関連する場面とトークを表示します。</p>`;
+  if (sel) {
+    const n = nodes.get(sel), c = cov.get(sel), pc = projCov?.get(sel);
+    const prev = f.edges.filter((e) => e.to === sel).map((e) => e.from), next = f.edges.filter((e) => e.from === sel).map((e) => e.to);
+    const link = (id) => `<a href="#" data-goshape="${id}">${esc(id)}「${esc(nodes.get(id).label.replace(/\n/g, ""))}」</a>`;
+    const script = sameFlow ? scenesOf() : [];
+    const talks = [];
+    for (const def of S.meta.scenes) for (const cs of def.cases) if ((cs.sourceNodes[f.flowType] || []).includes(sel)) {
+      const gen = script.find((x) => x.sceneId === def.sceneId)?.cases.find((x) => x.caseId === cs.caseId);
+      talks.push({ def, cs, gen });
+    }
+    detail = `<h3 style="margin-top:0">${esc(sel)}「${nl(n.label)}」</h3>
+      <div class="row">${badge([CLS[n.cls], ""])}${badge(COV[c.coverage])}${pc ? badge(PST[pc.projectStatus]) : ""}</div>
+      <p class="small">${esc(n.note)}</p>
+      <div class="small"><b>前の状況：</b>${prev.map(link).join("、") || "—"}<br><b>次の状況：</b>${next.map(link).join("、") || "—"}${n.parent && !prev.length ? `<br><b>注記の対象：</b>${link(n.parent)}` : ""}</div>
+      <h4>関連する発話場面</h4>
+      ${talks.length ? talks.map((t) => `<div class="case"><b>${esc(t.def.sceneId)} ${esc(t.def.title)}</b><div class="cond">ケース：${esc(t.cs.label)}（${esc(t.cs.condition)}）${t.cs.guardrail ? `<br>扱い：${esc(t.cs.guardrail)}` : ""}</div>
+        ${t.gen ? t.gen.variants.filter((v) => v.style !== "short").map((v) => talkBlock(v)).join("") : `<div class="small muted">${sameFlow ? "未生成" : "この案件とはフローが異なるため、トークは表示しません"}</div>`}</div>`).join("")
+        : `<p class="small muted">${n.scenes.length ? "場面：" + n.scenes.join(", ") + "（場面全体の条件として参照）" : "台本を作らない図形です（理由は上記）。"}</p>`}`;
+  }
+  const scenesForFlow = S.meta.scenes.filter((x) => x.flows.includes(f.flowType));
+  const st = T7.sources;
+  el.innerHTML = `
+    <div class="panel">
+      <div class="row" style="justify-content:space-between">
+        <h2 style="margin:0">コールフロー図（原本Excelの図形配置を再現）</h2>
+        <div class="row">${S.meta.flows.map((x) => `<button class="btn ${x.flowType === f.flowType ? "" : "ghost"} small" data-ft7="${x.flowType}">${esc(x.sheetName)}</button>`).join("")}</div>
+      </div>
+      <p class="small muted">出典：${esc(f.layoutSource)}「${esc(f.sheetName)}」（図形 ${f.nodes.length}／接続線 ${f.edges.length}）。原本の接続線には矢印がありません。矢印は<b>本アプリが図の配置と意味から読解した向き</b>です。${sameFlow ? "この案件で条件により対象外の場面に対応する図形は薄く表示しています。" : ""}</p>
+      <div class="row small" style="margin:6px 0">
+        <span class="legend">${Object.entries(FCOL).map(([k, v]) => `<span><i style="background:${v}${k === "N" || k === "F" ? ";border-style:dashed" : ""}"></i>${k} ${CLS[k]}</span>`).join("")}</span>
+      </div>
+      <div class="row small" style="margin-bottom:8px">
+        場面で強調：<select id="t7scene" style="width:auto"><option value="">（なし）</option>${scenesForFlow.map((x) => `<option value="${x.sceneId}" ${T7.scene === x.sceneId ? "selected" : ""}>${x.sceneId} ${esc(x.title)}</option>`).join("")}</select>
+        <label><input type="checkbox" id="t7arr" ${T7.arrows ? "checked" : ""}> 読解した向きを矢印で表示</label>
+        <button class="btn ghost small" data-zoom="-1">縮小</button><button class="btn ghost small" data-zoom="1">拡大</button>
+      </div>
+      <div class="flowwrap"><div class="flowcanvas">${svg}</div><div class="panel detail" style="margin:0">${detail}</div></div>
+    </div>
+    <div class="panel">
+      <h2>参照資料の受領状況</h2>
+      <table><tr><th>資料</th><th>役割</th><th>状況</th><th>確認内容</th></tr>
+      ${st.materials.map((m) => `<tr><td>${esc(m.name)}${m.repoPath ? `<div class="small muted">${esc(m.repoPath)}</div>` : ""}</td><td class="small">${esc(m.role)}</td><td>${badge([m.status, m.status === "未受領" ? "warn" : "ok"])}</td><td class="small">${esc(m.note)}</td></tr>`).join("")}</table>
+      <h3>不採用シート（参考：仕様には反映しない）</h3>
+      <table><tr><th>シート</th><th>不採用シートにのみある図形</th><th>最新版にのみある図形</th></tr>
+      ${st.unusedDiffs.map((d) => `<tr><td>${esc(d.sheet)}</td><td class="small">${d.onlyUnused.map(esc).join("、")}</td><td class="small">${d.onlyLatest.map(esc).join("、")}</td></tr>`).join("")}</table>
+    </div>
+    <div class="panel">
+      <h2>ChatGPTプロジェクト指示書の原則と実装の対応</h2>
+      <p class="small muted">実装状況は開発側の自己評価です。「次段階」「将来構想」は現在の中核機能と区別して管理しています。</p>
+      <div class="row small" style="margin-bottom:6px">${["実装済み", "一部実装", "次段階", "将来構想", "方針どおり対象外"].map((k) => `${badge([k, k === "実装済み" ? "ok" : k === "一部実装" ? "warn" : "gray"])} ${st.principles.filter((p) => p.status === k).length}`).join("　")}</div>
+      <table><tr><th>章</th><th>原則</th><th>状況</th><th>実装箇所・補足</th></tr>
+      ${st.principles.map((p) => `<tr><td>${esc(p.section)}</td><td class="small">${esc(p.principle)}</td><td>${badge([p.status, p.status === "実装済み" ? "ok" : p.status === "一部実装" ? "warn" : "gray"])}</td><td class="small">${esc(p.where)}</td></tr>`).join("")}</table>
+    </div>`;
+  $$("[data-ft7]", el).forEach((b) => (b.onclick = () => { T7.flowType = b.dataset.ft7; T7.sel = null; T7.scene = ""; renderT7(); }));
+  $$(".node", el).forEach((g) => (g.onclick = () => { T7.sel = g.dataset.shape; renderT7(); }));
+  $$("[data-goshape]", el).forEach((a) => (a.onclick = (ev) => { ev.preventDefault(); T7.sel = a.dataset.goshape; renderT7(); }));
+  $("#t7scene").onchange = (e) => { T7.scene = e.target.value; renderT7(); };
+  $("#t7arr").onchange = (e) => { T7.arrows = e.target.checked; renderT7(); };
+  $$("[data-zoom]", el).forEach((b) => (b.onclick = () => { T7.zoom = Math.min(1.6, Math.max(0.35, T7.zoom + Number(b.dataset.zoom) * 0.15)); renderT7(); }));
+  bindCopy(el);
 }
 
 boot().catch((e) => toast(e.message, true));

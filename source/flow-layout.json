@@ -1,0 +1,1787 @@
+{
+ "source_file": "テレアポのコールフロー（①キーマン名なし、②キーマン名あり）.xlsx",
+ "sheets": [
+  {
+   "sheet_name": "①キーマン名なしリスト",
+   "drawing": "xl/drawings/drawing1.xml",
+   "shapes": [
+    {
+     "id": "2",
+     "text": "キーマンの部署の受付に取り次ぎ",
+     "x": 748.1,
+     "y": 423.4,
+     "w": 86.7,
+     "h": 69.0,
+     "border": true
+    },
+    {
+     "id": "3",
+     "text": "キーマンと\n対話できず",
+     "x": 967.2,
+     "y": 518.4,
+     "w": 85.5,
+     "h": 69.6,
+     "border": true
+    },
+    {
+     "id": "4",
+     "text": "キーマン\n不在",
+     "x": 901.6,
+     "y": 675.7,
+     "w": 86.4,
+     "h": 69.0,
+     "border": true
+    },
+    {
+     "id": "5",
+     "text": "在席日時\n入手",
+     "x": 882.4,
+     "y": 889.0,
+     "w": 85.5,
+     "h": 69.6,
+     "border": true
+    },
+    {
+     "id": "6",
+     "text": "在席日時\n入手できず",
+     "x": 728.3,
+     "y": 927.6,
+     "w": 86.8,
+     "h": 69.0,
+     "border": true
+    },
+    {
+     "id": "7",
+     "text": "取次ぎ\n拒否",
+     "x": 1225.6,
+     "y": 635.1,
+     "w": 85.8,
+     "h": 69.6,
+     "border": true
+    },
+    {
+     "id": "8",
+     "text": "キーマンへメール\n転送OK",
+     "x": 1152.3,
+     "y": 889.0,
+     "w": 85.4,
+     "h": 69.6,
+     "border": true
+    },
+    {
+     "id": "9",
+     "text": "問合せフォームへ\n誘導",
+     "x": 1686.9,
+     "y": 750.9,
+     "w": 85.4,
+     "h": 69.6,
+     "border": true
+    },
+    {
+     "id": "10",
+     "text": "キーマンへメール\n転送NG",
+     "x": 1259.1,
+     "y": 889.0,
+     "w": 85.4,
+     "h": 69.6,
+     "border": true
+    },
+    {
+     "id": "11",
+     "text": "基本出勤",
+     "x": 660.2,
+     "y": 1032.0,
+     "w": 85.5,
+     "h": 69.6,
+     "border": true
+    },
+    {
+     "id": "12",
+     "text": "ほぼ在宅",
+     "x": 808.2,
+     "y": 1032.0,
+     "w": 85.5,
+     "h": 69.6,
+     "border": true
+    },
+    {
+     "id": "13",
+     "text": "携帯電話\n番号入手",
+     "x": 763.9,
+     "y": 1145.8,
+     "w": 85.5,
+     "h": 69.6,
+     "border": true
+    },
+    {
+     "id": "14",
+     "text": "携帯電話\n番号入手\nできず",
+     "x": 879.0,
+     "y": 1145.8,
+     "w": 85.6,
+     "h": 69.6,
+     "border": true
+    },
+    {
+     "id": "15",
+     "text": "キーマンと対話",
+     "x": 209.8,
+     "y": 518.4,
+     "w": 85.6,
+     "h": 69.3,
+     "border": true
+    },
+    {
+     "id": "16",
+     "text": "キーマン名\n入手",
+     "x": 809.0,
+     "y": 790.5,
+     "w": 86.7,
+     "h": 69.0,
+     "border": true
+    },
+    {
+     "id": "17",
+     "text": "キーマン名\n入手\nできず",
+     "x": 948.8,
+     "y": 750.9,
+     "w": 85.6,
+     "h": 69.6,
+     "border": true
+    },
+    {
+     "id": "18",
+     "text": "商談OK",
+     "x": 36.1,
+     "y": 675.7,
+     "w": 86.7,
+     "h": 69.0,
+     "border": true
+    },
+    {
+     "id": "19",
+     "text": "資料送付\nOK",
+     "x": 162.3,
+     "y": 675.7,
+     "w": 86.7,
+     "h": 69.0,
+     "border": true
+    },
+    {
+     "id": "20",
+     "text": "商談・資料\n不要",
+     "x": 288.6,
+     "y": 675.7,
+     "w": 86.4,
+     "h": 69.0,
+     "border": true
+    },
+    {
+     "id": "23",
+     "text": "会社として\n営業電話\n拒否",
+     "x": 1560.2,
+     "y": 750.9,
+     "w": 85.5,
+     "h": 69.6,
+     "border": true
+    },
+    {
+     "id": "24",
+     "text": "受付判断\n拒否",
+     "x": 1417.9,
+     "y": 750.9,
+     "w": 85.5,
+     "h": 69.6,
+     "border": true
+    },
+    {
+     "id": "25",
+     "text": "営業電話\n警戒\n（居留守）",
+     "x": 1158.4,
+     "y": 750.9,
+     "w": 85.3,
+     "h": 69.6,
+     "border": true
+    },
+    {
+     "id": "26",
+     "text": "架電",
+     "x": 949.1,
+     "y": 56.0,
+     "w": 85.6,
+     "h": 69.6,
+     "border": true
+    },
+    {
+     "id": "27",
+     "text": "電話\nつながる",
+     "x": 513.1,
+     "y": 171.1,
+     "w": 85.5,
+     "h": 69.6,
+     "border": true
+    },
+    {
+     "id": "28",
+     "text": "電話\nつながらず",
+     "x": 1391.5,
+     "y": 169.5,
+     "w": 86.7,
+     "h": 69.0,
+     "border": true
+    },
+    {
+     "id": "29",
+     "text": "受付担当者が受電",
+     "x": 804.8,
+     "y": 288.4,
+     "w": 85.5,
+     "h": 69.6,
+     "border": true
+    },
+    {
+     "id": "30",
+     "text": "キーマン\nが受電",
+     "x": 279.8,
+     "y": 288.4,
+     "w": 85.5,
+     "h": 69.6,
+     "border": true
+    },
+    {
+     "id": "60",
+     "text": "鳴りっぱなし",
+     "x": 1298.3,
+     "y": 286.0,
+     "w": 86.4,
+     "h": 69.0,
+     "border": true
+    },
+    {
+     "id": "61",
+     "text": "留守電",
+     "x": 1454.0,
+     "y": 286.0,
+     "w": 86.7,
+     "h": 69.0,
+     "border": true
+    },
+    {
+     "id": "62",
+     "text": "音声\nガイダンス",
+     "x": 1620.0,
+     "y": 286.0,
+     "w": 86.7,
+     "h": 69.0,
+     "border": true
+    },
+    {
+     "id": "63",
+     "text": "電源が\n入って\nいない",
+     "x": 1780.6,
+     "y": 399.4,
+     "w": 86.7,
+     "h": 69.0,
+     "border": true
+    },
+    {
+     "id": "64",
+     "text": "Pushボタン",
+     "x": 1637.4,
+     "y": 399.4,
+     "w": 86.7,
+     "h": 69.0,
+     "border": true
+    },
+    {
+     "id": "65",
+     "text": "使われていない",
+     "x": 1472.3,
+     "y": 399.4,
+     "w": 86.7,
+     "h": 69.0,
+     "border": true
+    },
+    {
+     "id": "73",
+     "text": "電話番号を調査して再架電",
+     "x": 1463.3,
+     "y": 476.0,
+     "w": 162.4,
+     "h": 25.4,
+     "border": true
+    },
+    {
+     "id": "75",
+     "text": "②キーマンあり\n　リストへ",
+     "x": 149.6,
+     "y": 744.1,
+     "w": 99.5,
+     "h": 41.2,
+     "border": true
+    },
+    {
+     "id": "76",
+     "text": "次回コール可",
+     "x": 209.5,
+     "y": 790.5,
+     "w": 86.7,
+     "h": 69.0,
+     "border": true
+    },
+    {
+     "id": "77",
+     "text": "次回コール不可",
+     "x": 424.3,
+     "y": 790.5,
+     "w": 86.7,
+     "h": 69.0,
+     "border": true
+    },
+    {
+     "id": "78",
+     "text": "検討時期\nヒアリング",
+     "x": 157.5,
+     "y": 927.6,
+     "w": 86.7,
+     "h": 69.0,
+     "border": true
+    },
+    {
+     "id": "79",
+     "text": "検討時期\nヒアリング\nできず",
+     "x": 262.6,
+     "y": 927.6,
+     "w": 86.7,
+     "h": 69.0,
+     "border": true
+    },
+    {
+     "id": "80",
+     "text": "会社として\n可能性なし",
+     "x": 371.2,
+     "y": 927.6,
+     "w": 86.7,
+     "h": 69.0,
+     "border": true
+    },
+    {
+     "id": "81",
+     "text": "担当として\n可能性なし",
+     "x": 480.9,
+     "y": 927.6,
+     "w": 86.7,
+     "h": 69.0,
+     "border": true
+    },
+    {
+     "id": "88",
+     "text": "・クレーム\n・強い拒否",
+     "x": 485.2,
+     "y": 998.9,
+     "w": 73.9,
+     "h": 41.2,
+     "border": true
+    },
+    {
+     "id": "89",
+     "text": "・業種違い\n　（ニーズなし）\n・取引不可",
+     "x": 373.2,
+     "y": 998.9,
+     "w": 96.4,
+     "h": 57.0,
+     "border": true
+    },
+    {
+     "id": "90",
+     "text": "店長などの場合",
+     "x": 881.3,
+     "y": 961.5,
+     "w": 103.7,
+     "h": 25.4,
+     "border": true
+    },
+    {
+     "id": "91",
+     "text": "キーマンへ確認前に\n拒否",
+     "x": 1386.7,
+     "y": 889.0,
+     "w": 85.4,
+     "h": 69.6,
+     "border": true
+    },
+    {
+     "id": "92",
+     "text": "キーマンへ確認後に\n拒否",
+     "x": 1500.5,
+     "y": 889.0,
+     "w": 85.4,
+     "h": 69.6,
+     "border": true
+    },
+    {
+     "id": "96",
+     "text": "キーマンへメール\nOK（直接）",
+     "x": 1045.4,
+     "y": 889.0,
+     "w": 85.4,
+     "h": 69.6,
+     "border": true
+    },
+    {
+     "id": "116",
+     "text": "未完了\n（時間なく再架電など）",
+     "x": 444.6,
+     "y": 675.7,
+     "w": 86.4,
+     "h": 69.0,
+     "border": true
+    }
+   ],
+   "connectors": [
+    {
+     "id": "31",
+     "st": "26",
+     "stIdx": 2,
+     "en": "27",
+     "enIdx": 0,
+     "geom": "bentConnector3",
+     "arrowHead": null,
+     "arrowTail": null
+    },
+    {
+     "id": "32",
+     "st": "27",
+     "stIdx": 2,
+     "en": "30",
+     "enIdx": 0,
+     "geom": "bentConnector3",
+     "arrowHead": null,
+     "arrowTail": null
+    },
+    {
+     "id": "33",
+     "st": "27",
+     "stIdx": 2,
+     "en": "29",
+     "enIdx": 0,
+     "geom": "bentConnector3",
+     "arrowHead": null,
+     "arrowTail": null
+    },
+    {
+     "id": "38",
+     "st": "3",
+     "stIdx": 2,
+     "en": "4",
+     "enIdx": 0,
+     "geom": "bentConnector3",
+     "arrowHead": null,
+     "arrowTail": null
+    },
+    {
+     "id": "39",
+     "st": "3",
+     "stIdx": 2,
+     "en": "7",
+     "enIdx": 0,
+     "geom": "bentConnector3",
+     "arrowHead": null,
+     "arrowTail": null
+    },
+    {
+     "id": "40",
+     "st": "4",
+     "stIdx": 2,
+     "en": "16",
+     "enIdx": 0,
+     "geom": "bentConnector3",
+     "arrowHead": null,
+     "arrowTail": null
+    },
+    {
+     "id": "41",
+     "st": "4",
+     "stIdx": 2,
+     "en": "17",
+     "enIdx": 0,
+     "geom": "bentConnector3",
+     "arrowHead": null,
+     "arrowTail": null
+    },
+    {
+     "id": "42",
+     "st": "16",
+     "stIdx": 2,
+     "en": "5",
+     "enIdx": 0,
+     "geom": "bentConnector3",
+     "arrowHead": null,
+     "arrowTail": null
+    },
+    {
+     "id": "43",
+     "st": "16",
+     "stIdx": 2,
+     "en": "6",
+     "enIdx": 0,
+     "geom": "bentConnector3",
+     "arrowHead": null,
+     "arrowTail": null
+    },
+    {
+     "id": "44",
+     "st": "11",
+     "stIdx": 0,
+     "en": "6",
+     "enIdx": 2,
+     "geom": "bentConnector3",
+     "arrowHead": null,
+     "arrowTail": null
+    },
+    {
+     "id": "45",
+     "st": "12",
+     "stIdx": 0,
+     "en": "6",
+     "enIdx": 2,
+     "geom": "bentConnector3",
+     "arrowHead": null,
+     "arrowTail": null
+    },
+    {
+     "id": "46",
+     "st": "13",
+     "stIdx": 0,
+     "en": "12",
+     "enIdx": 2,
+     "geom": "bentConnector3",
+     "arrowHead": null,
+     "arrowTail": null
+    },
+    {
+     "id": "47",
+     "st": "14",
+     "stIdx": 0,
+     "en": "12",
+     "enIdx": 2,
+     "geom": "bentConnector3",
+     "arrowHead": null,
+     "arrowTail": null
+    },
+    {
+     "id": "48",
+     "st": "7",
+     "stIdx": 2,
+     "en": "25",
+     "enIdx": 0,
+     "geom": "bentConnector3",
+     "arrowHead": null,
+     "arrowTail": null
+    },
+    {
+     "id": "49",
+     "st": "30",
+     "stIdx": 2,
+     "en": "15",
+     "enIdx": 0,
+     "geom": "bentConnector3",
+     "arrowHead": null,
+     "arrowTail": null
+    },
+    {
+     "id": "50",
+     "st": "7",
+     "stIdx": 2,
+     "en": "24",
+     "enIdx": 0,
+     "geom": "bentConnector3",
+     "arrowHead": null,
+     "arrowTail": null
+    },
+    {
+     "id": "51",
+     "st": "7",
+     "stIdx": 2,
+     "en": "23",
+     "enIdx": 0,
+     "geom": "bentConnector3",
+     "arrowHead": null,
+     "arrowTail": null
+    },
+    {
+     "id": "52",
+     "st": "25",
+     "stIdx": 2,
+     "en": "8",
+     "enIdx": 0,
+     "geom": "bentConnector3",
+     "arrowHead": null,
+     "arrowTail": null
+    },
+    {
+     "id": "53",
+     "st": "25",
+     "stIdx": 2,
+     "en": "10",
+     "enIdx": 0,
+     "geom": "bentConnector3",
+     "arrowHead": null,
+     "arrowTail": null
+    },
+    {
+     "id": "56",
+     "st": "18",
+     "stIdx": 0,
+     "en": "15",
+     "enIdx": 2,
+     "geom": "bentConnector3",
+     "arrowHead": null,
+     "arrowTail": null
+    },
+    {
+     "id": "57",
+     "st": "19",
+     "stIdx": 0,
+     "en": "15",
+     "enIdx": 2,
+     "geom": "bentConnector3",
+     "arrowHead": null,
+     "arrowTail": null
+    },
+    {
+     "id": "58",
+     "st": "20",
+     "stIdx": 0,
+     "en": "15",
+     "enIdx": 2,
+     "geom": "bentConnector3",
+     "arrowHead": null,
+     "arrowTail": null
+    },
+    {
+     "id": "59",
+     "st": "17",
+     "stIdx": 2,
+     "en": "5",
+     "enIdx": 3,
+     "geom": "bentConnector2",
+     "arrowHead": null,
+     "arrowTail": null
+    },
+    {
+     "id": "66",
+     "st": "28",
+     "stIdx": 2,
+     "en": "60",
+     "enIdx": 0,
+     "geom": "bentConnector3",
+     "arrowHead": null,
+     "arrowTail": null
+    },
+    {
+     "id": "67",
+     "st": "28",
+     "stIdx": 2,
+     "en": "61",
+     "enIdx": 0,
+     "geom": "bentConnector3",
+     "arrowHead": null,
+     "arrowTail": null
+    },
+    {
+     "id": "68",
+     "st": "28",
+     "stIdx": 2,
+     "en": "62",
+     "enIdx": 0,
+     "geom": "bentConnector3",
+     "arrowHead": null,
+     "arrowTail": null
+    },
+    {
+     "id": "69",
+     "st": "62",
+     "stIdx": 2,
+     "en": "65",
+     "enIdx": 0,
+     "geom": "bentConnector3",
+     "arrowHead": null,
+     "arrowTail": null
+    },
+    {
+     "id": "70",
+     "st": "62",
+     "stIdx": 2,
+     "en": "64",
+     "enIdx": 0,
+     "geom": "bentConnector3",
+     "arrowHead": null,
+     "arrowTail": null
+    },
+    {
+     "id": "71",
+     "st": "62",
+     "stIdx": 2,
+     "en": "63",
+     "enIdx": 0,
+     "geom": "bentConnector3",
+     "arrowHead": null,
+     "arrowTail": null
+    },
+    {
+     "id": "72",
+     "st": "26",
+     "stIdx": 2,
+     "en": "28",
+     "enIdx": 0,
+     "geom": "bentConnector3",
+     "arrowHead": null,
+     "arrowTail": null
+    },
+    {
+     "id": "74",
+     "st": "29",
+     "stIdx": 2,
+     "en": "15",
+     "enIdx": 0,
+     "geom": "line",
+     "arrowHead": null,
+     "arrowTail": null
+    },
+    {
+     "id": "82",
+     "st": "76",
+     "stIdx": 0,
+     "en": "20",
+     "enIdx": 2,
+     "geom": "bentConnector3",
+     "arrowHead": null,
+     "arrowTail": null
+    },
+    {
+     "id": "83",
+     "st": "77",
+     "stIdx": 0,
+     "en": "20",
+     "enIdx": 2,
+     "geom": "bentConnector3",
+     "arrowHead": null,
+     "arrowTail": null
+    },
+    {
+     "id": "84",
+     "st": "78",
+     "stIdx": 0,
+     "en": "76",
+     "enIdx": 2,
+     "geom": "bentConnector3",
+     "arrowHead": null,
+     "arrowTail": null
+    },
+    {
+     "id": "85",
+     "st": "79",
+     "stIdx": 0,
+     "en": "76",
+     "enIdx": 2,
+     "geom": "bentConnector3",
+     "arrowHead": null,
+     "arrowTail": null
+    },
+    {
+     "id": "86",
+     "st": "80",
+     "stIdx": 0,
+     "en": "77",
+     "enIdx": 2,
+     "geom": "bentConnector3",
+     "arrowHead": null,
+     "arrowTail": null
+    },
+    {
+     "id": "87",
+     "st": "81",
+     "stIdx": 0,
+     "en": "77",
+     "enIdx": 2,
+     "geom": "bentConnector3",
+     "arrowHead": null,
+     "arrowTail": null
+    },
+    {
+     "id": "93",
+     "st": "24",
+     "stIdx": 2,
+     "en": "91",
+     "enIdx": 0,
+     "geom": "bentConnector3",
+     "arrowHead": null,
+     "arrowTail": null
+    },
+    {
+     "id": "94",
+     "st": "24",
+     "stIdx": 2,
+     "en": "92",
+     "enIdx": 0,
+     "geom": "bentConnector3",
+     "arrowHead": null,
+     "arrowTail": null
+    },
+    {
+     "id": "95",
+     "st": "7",
+     "stIdx": 2,
+     "en": "9",
+     "enIdx": 0,
+     "geom": "bentConnector3",
+     "arrowHead": null,
+     "arrowTail": null
+    },
+    {
+     "id": "97",
+     "st": "25",
+     "stIdx": 2,
+     "en": "96",
+     "enIdx": 0,
+     "geom": "bentConnector3",
+     "arrowHead": null,
+     "arrowTail": null
+    },
+    {
+     "id": "98",
+     "st": "2",
+     "stIdx": 2,
+     "en": "15",
+     "enIdx": 0,
+     "geom": "line",
+     "arrowHead": null,
+     "arrowTail": null
+    },
+    {
+     "id": "101",
+     "st": "29",
+     "stIdx": 2,
+     "en": "2",
+     "enIdx": 0,
+     "geom": "line",
+     "arrowHead": null,
+     "arrowTail": null
+    },
+    {
+     "id": "104",
+     "st": "2",
+     "stIdx": 2,
+     "en": "3",
+     "enIdx": 0,
+     "geom": "line",
+     "arrowHead": null,
+     "arrowTail": null
+    },
+    {
+     "id": "107",
+     "st": "29",
+     "stIdx": 2,
+     "en": "3",
+     "enIdx": 0,
+     "geom": "line",
+     "arrowHead": null,
+     "arrowTail": null
+    },
+    {
+     "id": "117",
+     "st": "116",
+     "stIdx": 0,
+     "en": "15",
+     "enIdx": 2,
+     "geom": "bentConnector3",
+     "arrowHead": null,
+     "arrowTail": null
+    }
+   ]
+  },
+  {
+   "sheet_name": "②キーマン名ありリスト",
+   "drawing": "xl/drawings/drawing2.xml",
+   "shapes": [
+    {
+     "id": "3",
+     "text": "キーマンと\n対話できず",
+     "x": 967.2,
+     "y": 518.4,
+     "w": 85.5,
+     "h": 69.6,
+     "border": true
+    },
+    {
+     "id": "4",
+     "text": "キーマン\n不在",
+     "x": 901.6,
+     "y": 629.7,
+     "w": 86.4,
+     "h": 69.0,
+     "border": true
+    },
+    {
+     "id": "5",
+     "text": "在席日時\n入手",
+     "x": 894.0,
+     "y": 744.5,
+     "w": 86.7,
+     "h": 69.0,
+     "border": true
+    },
+    {
+     "id": "6",
+     "text": "在席日時\n入手できず",
+     "x": 728.3,
+     "y": 744.5,
+     "w": 86.8,
+     "h": 69.0,
+     "border": true
+    },
+    {
+     "id": "7",
+     "text": "取次ぎ\n拒否",
+     "x": 1230.2,
+     "y": 625.8,
+     "w": 86.1,
+     "h": 68.6,
+     "border": true
+    },
+    {
+     "id": "8",
+     "text": "キーマンへメール\n転送OK",
+     "x": 1152.3,
+     "y": 889.0,
+     "w": 85.4,
+     "h": 69.6,
+     "border": true
+    },
+    {
+     "id": "9",
+     "text": "問合せフォームへ\n誘導",
+     "x": 1693.3,
+     "y": 739.9,
+     "w": 85.8,
+     "h": 68.6,
+     "border": true
+    },
+    {
+     "id": "10",
+     "text": "キーマンへメール\n転送NG",
+     "x": 1259.1,
+     "y": 889.0,
+     "w": 85.4,
+     "h": 69.6,
+     "border": true
+    },
+    {
+     "id": "11",
+     "text": "基本出勤",
+     "x": 669.0,
+     "y": 881.6,
+     "w": 86.7,
+     "h": 69.0,
+     "border": true
+    },
+    {
+     "id": "12",
+     "text": "ほぼ在宅",
+     "x": 819.0,
+     "y": 881.6,
+     "w": 86.7,
+     "h": 69.0,
+     "border": true
+    },
+    {
+     "id": "13",
+     "text": "携帯電話\n番号入手",
+     "x": 773.9,
+     "y": 998.0,
+     "w": 86.7,
+     "h": 69.0,
+     "border": true
+    },
+    {
+     "id": "14",
+     "text": "携帯電話\n番号入手\nできず",
+     "x": 890.6,
+     "y": 998.0,
+     "w": 86.8,
+     "h": 69.0,
+     "border": true
+    },
+    {
+     "id": "15",
+     "text": "キーマンと対話",
+     "x": 209.8,
+     "y": 518.4,
+     "w": 85.6,
+     "h": 69.3,
+     "border": true
+    },
+    {
+     "id": "16",
+     "text": "在籍なし\n（退職・異動）",
+     "x": 1872.3,
+     "y": 625.8,
+     "w": 85.8,
+     "h": 67.8,
+     "border": true
+    },
+    {
+     "id": "22",
+     "text": "商談希望",
+     "x": 36.1,
+     "y": 629.7,
+     "w": 86.7,
+     "h": 69.0,
+     "border": true
+    },
+    {
+     "id": "23",
+     "text": "資料送付\n希望",
+     "x": 155.5,
+     "y": 629.7,
+     "w": 86.7,
+     "h": 69.0,
+     "border": true
+    },
+    {
+     "id": "24",
+     "text": "商談・資料\n不要",
+     "x": 293.6,
+     "y": 629.7,
+     "w": 86.4,
+     "h": 69.0,
+     "border": true
+    },
+    {
+     "id": "26",
+     "text": "未完了\n（時間なく再架電など）",
+     "x": 457.9,
+     "y": 629.7,
+     "w": 86.7,
+     "h": 69.0,
+     "border": true
+    },
+    {
+     "id": "27",
+     "text": "会社として\n営業電話\n拒否",
+     "x": 1560.2,
+     "y": 750.9,
+     "w": 85.5,
+     "h": 69.6,
+     "border": true
+    },
+    {
+     "id": "28",
+     "text": "受付判断\n拒否",
+     "x": 1417.9,
+     "y": 750.9,
+     "w": 85.5,
+     "h": 69.6,
+     "border": true
+    },
+    {
+     "id": "29",
+     "text": "営業電話\n警戒\n（居留守）",
+     "x": 1174.0,
+     "y": 744.5,
+     "w": 86.5,
+     "h": 69.0,
+     "border": true
+    },
+    {
+     "id": "30",
+     "text": "架電",
+     "x": 949.1,
+     "y": 56.0,
+     "w": 85.6,
+     "h": 69.6,
+     "border": true
+    },
+    {
+     "id": "31",
+     "text": "電話\nつながる",
+     "x": 513.1,
+     "y": 171.1,
+     "w": 85.5,
+     "h": 69.6,
+     "border": true
+    },
+    {
+     "id": "32",
+     "text": "電話\nつながらず",
+     "x": 1604.9,
+     "y": 170.7,
+     "w": 85.5,
+     "h": 69.6,
+     "border": true
+    },
+    {
+     "id": "33",
+     "text": "キーマン\n部署の受付が受電",
+     "x": 804.8,
+     "y": 288.4,
+     "w": 85.5,
+     "h": 69.6,
+     "border": true
+    },
+    {
+     "id": "34",
+     "text": "キーマン\nが受電",
+     "x": 279.8,
+     "y": 288.4,
+     "w": 85.5,
+     "h": 69.6,
+     "border": true
+    },
+    {
+     "id": "64",
+     "text": "鳴りっぱなし",
+     "x": 1512.9,
+     "y": 288.4,
+     "w": 85.6,
+     "h": 69.6,
+     "border": true
+    },
+    {
+     "id": "65",
+     "text": "留守電",
+     "x": 1666.6,
+     "y": 288.4,
+     "w": 85.5,
+     "h": 69.6,
+     "border": true
+    },
+    {
+     "id": "66",
+     "text": "音声\nガイダンス",
+     "x": 1830.6,
+     "y": 288.4,
+     "w": 85.5,
+     "h": 69.6,
+     "border": true
+    },
+    {
+     "id": "67",
+     "text": "電源が\n入って\nいない",
+     "x": 1988.8,
+     "y": 402.8,
+     "w": 85.5,
+     "h": 69.6,
+     "border": true
+    },
+    {
+     "id": "68",
+     "text": "Pushボタン",
+     "x": 1847.6,
+     "y": 402.8,
+     "w": 85.5,
+     "h": 69.6,
+     "border": true
+    },
+    {
+     "id": "69",
+     "text": "使われていない",
+     "x": 1684.9,
+     "y": 402.8,
+     "w": 85.5,
+     "h": 69.6,
+     "border": true
+    },
+    {
+     "id": "77",
+     "text": "電話番号を調査して再架電",
+     "x": 1675.9,
+     "y": 480.0,
+     "w": 162.4,
+     "h": 25.4,
+     "border": true
+    },
+    {
+     "id": "80",
+     "text": "次回コール可",
+     "x": 227.5,
+     "y": 744.5,
+     "w": 86.7,
+     "h": 69.0,
+     "border": true
+    },
+    {
+     "id": "81",
+     "text": "次回コール不可",
+     "x": 444.3,
+     "y": 744.5,
+     "w": 86.7,
+     "h": 69.0,
+     "border": true
+    },
+    {
+     "id": "82",
+     "text": "検討時期\nヒアリング",
+     "x": 175.5,
+     "y": 881.6,
+     "w": 86.7,
+     "h": 69.0,
+     "border": true
+    },
+    {
+     "id": "83",
+     "text": "検討時期\nヒアリング\nできず",
+     "x": 280.6,
+     "y": 881.6,
+     "w": 86.7,
+     "h": 69.0,
+     "border": true
+    },
+    {
+     "id": "84",
+     "text": "会社として\n可能性なし",
+     "x": 391.2,
+     "y": 881.6,
+     "w": 86.7,
+     "h": 69.0,
+     "border": true
+    },
+    {
+     "id": "85",
+     "text": "担当として\n可能性なし",
+     "x": 500.9,
+     "y": 881.6,
+     "w": 86.7,
+     "h": 69.0,
+     "border": true
+    },
+    {
+     "id": "92",
+     "text": "・クレーム\n・強い拒否",
+     "x": 499.2,
+     "y": 951.9,
+     "w": 73.9,
+     "h": 41.2,
+     "border": true
+    },
+    {
+     "id": "93",
+     "text": "・業種違い\n　（ニーズなし）\n・取引不可",
+     "x": 387.2,
+     "y": 951.9,
+     "w": 96.4,
+     "h": 57.0,
+     "border": true
+    },
+    {
+     "id": "95",
+     "text": "キーマンへ確認前に\n拒否",
+     "x": 1386.7,
+     "y": 889.0,
+     "w": 85.4,
+     "h": 69.6,
+     "border": true
+    },
+    {
+     "id": "96",
+     "text": "キーマンへ確認後に\n拒否",
+     "x": 1506.2,
+     "y": 876.3,
+     "w": 85.8,
+     "h": 68.6,
+     "border": true
+    },
+    {
+     "id": "100",
+     "text": "キーマンへメール\nOK（直接）",
+     "x": 1059.4,
+     "y": 881.6,
+     "w": 86.6,
+     "h": 69.0,
+     "border": true
+    },
+    {
+     "id": "119",
+     "text": "後任者\n入手",
+     "x": 1826.6,
+     "y": 739.9,
+     "w": 85.8,
+     "h": 68.6,
+     "border": true
+    },
+    {
+     "id": "122",
+     "text": "後任者\n入手\nできず",
+     "x": 1945.5,
+     "y": 739.9,
+     "w": 85.8,
+     "h": 68.6,
+     "border": true
+    },
+    {
+     "id": "2",
+     "text": "・後任者へ取次依頼\n・②キーマン名ありコールへ",
+     "x": 1841.6,
+     "y": 820.0,
+     "w": 163.8,
+     "h": 41.2,
+     "border": true
+    },
+    {
+     "id": "17",
+     "text": "信頼が高いキーマン（優良顧客）から\n信頼が低いキーマン（数年前に展示会でブースに立ち寄っただけの人など）がいるので、\n確率（例：取次ぎ不可率など）は、リストによって変わる",
+     "x": 47.1,
+     "y": 54.0,
+     "w": 495.5,
+     "h": 57.0,
+     "border": true
+    }
+   ],
+   "connectors": [
+    {
+     "id": "35",
+     "st": "30",
+     "stIdx": 2,
+     "en": "31",
+     "enIdx": 0,
+     "geom": "bentConnector3",
+     "arrowHead": null,
+     "arrowTail": null
+    },
+    {
+     "id": "36",
+     "st": "31",
+     "stIdx": 2,
+     "en": "34",
+     "enIdx": 0,
+     "geom": "bentConnector3",
+     "arrowHead": null,
+     "arrowTail": null
+    },
+    {
+     "id": "37",
+     "st": "31",
+     "stIdx": 2,
+     "en": "33",
+     "enIdx": 0,
+     "geom": "bentConnector3",
+     "arrowHead": null,
+     "arrowTail": null
+    },
+    {
+     "id": "39",
+     "st": "33",
+     "stIdx": 2,
+     "en": "3",
+     "enIdx": 0,
+     "geom": "bentConnector3",
+     "arrowHead": null,
+     "arrowTail": null
+    },
+    {
+     "id": "42",
+     "st": "3",
+     "stIdx": 2,
+     "en": "4",
+     "enIdx": 0,
+     "geom": "bentConnector3",
+     "arrowHead": null,
+     "arrowTail": null
+    },
+    {
+     "id": "43",
+     "st": "3",
+     "stIdx": 2,
+     "en": "7",
+     "enIdx": 0,
+     "geom": "bentConnector3",
+     "arrowHead": null,
+     "arrowTail": null
+    },
+    {
+     "id": "44",
+     "st": "4",
+     "stIdx": 2,
+     "en": "6",
+     "enIdx": 0,
+     "geom": "bentConnector3",
+     "arrowHead": null,
+     "arrowTail": null
+    },
+    {
+     "id": "48",
+     "st": "11",
+     "stIdx": 0,
+     "en": "6",
+     "enIdx": 2,
+     "geom": "bentConnector3",
+     "arrowHead": null,
+     "arrowTail": null
+    },
+    {
+     "id": "49",
+     "st": "12",
+     "stIdx": 0,
+     "en": "6",
+     "enIdx": 2,
+     "geom": "bentConnector3",
+     "arrowHead": null,
+     "arrowTail": null
+    },
+    {
+     "id": "50",
+     "st": "13",
+     "stIdx": 0,
+     "en": "12",
+     "enIdx": 2,
+     "geom": "bentConnector3",
+     "arrowHead": null,
+     "arrowTail": null
+    },
+    {
+     "id": "51",
+     "st": "14",
+     "stIdx": 0,
+     "en": "12",
+     "enIdx": 2,
+     "geom": "bentConnector3",
+     "arrowHead": null,
+     "arrowTail": null
+    },
+    {
+     "id": "52",
+     "st": "7",
+     "stIdx": 2,
+     "en": "29",
+     "enIdx": 0,
+     "geom": "bentConnector3",
+     "arrowHead": null,
+     "arrowTail": null
+    },
+    {
+     "id": "53",
+     "st": "34",
+     "stIdx": 2,
+     "en": "15",
+     "enIdx": 0,
+     "geom": "bentConnector3",
+     "arrowHead": null,
+     "arrowTail": null
+    },
+    {
+     "id": "54",
+     "st": "7",
+     "stIdx": 2,
+     "en": "28",
+     "enIdx": 0,
+     "geom": "bentConnector3",
+     "arrowHead": null,
+     "arrowTail": null
+    },
+    {
+     "id": "55",
+     "st": "7",
+     "stIdx": 2,
+     "en": "27",
+     "enIdx": 0,
+     "geom": "bentConnector3",
+     "arrowHead": null,
+     "arrowTail": null
+    },
+    {
+     "id": "56",
+     "st": "29",
+     "stIdx": 2,
+     "en": "8",
+     "enIdx": 0,
+     "geom": "bentConnector3",
+     "arrowHead": null,
+     "arrowTail": null
+    },
+    {
+     "id": "57",
+     "st": "29",
+     "stIdx": 2,
+     "en": "10",
+     "enIdx": 0,
+     "geom": "bentConnector3",
+     "arrowHead": null,
+     "arrowTail": null
+    },
+    {
+     "id": "60",
+     "st": "22",
+     "stIdx": 0,
+     "en": "15",
+     "enIdx": 2,
+     "geom": "bentConnector3",
+     "arrowHead": null,
+     "arrowTail": null
+    },
+    {
+     "id": "61",
+     "st": "23",
+     "stIdx": 0,
+     "en": "15",
+     "enIdx": 2,
+     "geom": "bentConnector3",
+     "arrowHead": null,
+     "arrowTail": null
+    },
+    {
+     "id": "62",
+     "st": "24",
+     "stIdx": 0,
+     "en": "15",
+     "enIdx": 2,
+     "geom": "bentConnector3",
+     "arrowHead": null,
+     "arrowTail": null
+    },
+    {
+     "id": "70",
+     "st": "32",
+     "stIdx": 2,
+     "en": "64",
+     "enIdx": 0,
+     "geom": "bentConnector3",
+     "arrowHead": null,
+     "arrowTail": null
+    },
+    {
+     "id": "71",
+     "st": "32",
+     "stIdx": 2,
+     "en": "65",
+     "enIdx": 0,
+     "geom": "bentConnector3",
+     "arrowHead": null,
+     "arrowTail": null
+    },
+    {
+     "id": "72",
+     "st": "32",
+     "stIdx": 2,
+     "en": "66",
+     "enIdx": 0,
+     "geom": "bentConnector3",
+     "arrowHead": null,
+     "arrowTail": null
+    },
+    {
+     "id": "73",
+     "st": "66",
+     "stIdx": 2,
+     "en": "69",
+     "enIdx": 0,
+     "geom": "bentConnector3",
+     "arrowHead": null,
+     "arrowTail": null
+    },
+    {
+     "id": "74",
+     "st": "66",
+     "stIdx": 2,
+     "en": "68",
+     "enIdx": 0,
+     "geom": "bentConnector3",
+     "arrowHead": null,
+     "arrowTail": null
+    },
+    {
+     "id": "75",
+     "st": "66",
+     "stIdx": 2,
+     "en": "67",
+     "enIdx": 0,
+     "geom": "bentConnector3",
+     "arrowHead": null,
+     "arrowTail": null
+    },
+    {
+     "id": "76",
+     "st": "30",
+     "stIdx": 2,
+     "en": "32",
+     "enIdx": 0,
+     "geom": "bentConnector3",
+     "arrowHead": null,
+     "arrowTail": null
+    },
+    {
+     "id": "86",
+     "st": "80",
+     "stIdx": 0,
+     "en": "24",
+     "enIdx": 2,
+     "geom": "bentConnector3",
+     "arrowHead": null,
+     "arrowTail": null
+    },
+    {
+     "id": "87",
+     "st": "81",
+     "stIdx": 0,
+     "en": "24",
+     "enIdx": 2,
+     "geom": "bentConnector3",
+     "arrowHead": null,
+     "arrowTail": null
+    },
+    {
+     "id": "88",
+     "st": "82",
+     "stIdx": 0,
+     "en": "80",
+     "enIdx": 2,
+     "geom": "bentConnector3",
+     "arrowHead": null,
+     "arrowTail": null
+    },
+    {
+     "id": "89",
+     "st": "83",
+     "stIdx": 0,
+     "en": "80",
+     "enIdx": 2,
+     "geom": "bentConnector3",
+     "arrowHead": null,
+     "arrowTail": null
+    },
+    {
+     "id": "90",
+     "st": "84",
+     "stIdx": 0,
+     "en": "81",
+     "enIdx": 2,
+     "geom": "bentConnector3",
+     "arrowHead": null,
+     "arrowTail": null
+    },
+    {
+     "id": "91",
+     "st": "85",
+     "stIdx": 0,
+     "en": "81",
+     "enIdx": 2,
+     "geom": "bentConnector3",
+     "arrowHead": null,
+     "arrowTail": null
+    },
+    {
+     "id": "97",
+     "st": "28",
+     "stIdx": 2,
+     "en": "95",
+     "enIdx": 0,
+     "geom": "bentConnector3",
+     "arrowHead": null,
+     "arrowTail": null
+    },
+    {
+     "id": "98",
+     "st": "28",
+     "stIdx": 2,
+     "en": "96",
+     "enIdx": 0,
+     "geom": "bentConnector3",
+     "arrowHead": null,
+     "arrowTail": null
+    },
+    {
+     "id": "99",
+     "st": "7",
+     "stIdx": 2,
+     "en": "9",
+     "enIdx": 0,
+     "geom": "bentConnector3",
+     "arrowHead": null,
+     "arrowTail": null
+    },
+    {
+     "id": "101",
+     "st": "29",
+     "stIdx": 2,
+     "en": "100",
+     "enIdx": 0,
+     "geom": "bentConnector3",
+     "arrowHead": null,
+     "arrowTail": null
+    },
+    {
+     "id": "106",
+     "st": "4",
+     "stIdx": 2,
+     "en": "5",
+     "enIdx": 0,
+     "geom": "bentConnector3",
+     "arrowHead": null,
+     "arrowTail": null
+    },
+    {
+     "id": "110",
+     "st": "3",
+     "stIdx": 2,
+     "en": "16",
+     "enIdx": 0,
+     "geom": "bentConnector3",
+     "arrowHead": null,
+     "arrowTail": null
+    },
+    {
+     "id": "113",
+     "st": "16",
+     "stIdx": 2,
+     "en": "119",
+     "enIdx": 0,
+     "geom": "bentConnector3",
+     "arrowHead": null,
+     "arrowTail": null
+    },
+    {
+     "id": "116",
+     "st": "16",
+     "stIdx": 2,
+     "en": "122",
+     "enIdx": 0,
+     "geom": "bentConnector3",
+     "arrowHead": null,
+     "arrowTail": null
+    },
+    {
+     "id": "18",
+     "st": "33",
+     "stIdx": 2,
+     "en": "15",
+     "enIdx": 0,
+     "geom": "line",
+     "arrowHead": null,
+     "arrowTail": null
+    },
+    {
+     "id": "47",
+     "st": "26",
+     "stIdx": 0,
+     "en": "15",
+     "enIdx": 2,
+     "geom": "bentConnector3",
+     "arrowHead": null,
+     "arrowTail": null
+    }
+   ]
+  }
+ ],
+ "excluded_sheets": [
+  {
+   "sheet_name": "使用しない①キーマン名なしリスト",
+   "shape_count": 49,
+   "connector_count": 47
+  },
+  {
+   "sheet_name": "使用しない②キーマン名ありリスト",
+   "shape_count": 52,
+   "connector_count": 44
+  }
+ ]
+}

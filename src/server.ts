@@ -8,8 +8,15 @@ import { coverageFor } from "./domain/selection.js";
 import { Store } from "./store.js";
 import { ClaudeScriptAi, MODEL, AiOutputError, AiUnavailableError, type ScriptAi } from "./ai/claude.js";
 import { HttpError, Service } from "./service.js";
+import { PRINCIPLE_MAPPINGS, SOURCE_MATERIALS, UNUSED_SHEET_DIFFS } from "./domain/sources.js";
+import fs from "node:fs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const LAYOUT = JSON.parse(fs.readFileSync(path.join(__dirname, "..", "source", "flow-layout.json"), "utf8")) as {
+  source_file: string;
+  sheets: { sheet_name: string; shapes: unknown[]; connectors: unknown[] }[];
+  excluded_sheets: unknown[];
+};
 
 export function createApp(service: Service) {
   const app = express();
@@ -46,9 +53,11 @@ export function createApp(service: Service) {
   app.get("/api/flows/:flowType", h((req) => {
     const f = FLOWS[req.params.flowType as FlowType];
     if (!f) throw new HttpError(404, "フローが見つかりません");
-    return { ...f, label: FLOW_LABEL[f.flowType], coverage: coverageFor(f.flowType) };
+    const layout = LAYOUT.sheets.find((x) => x.sheet_name === f.sheetName);
+    return { ...f, label: FLOW_LABEL[f.flowType], coverage: coverageFor(f.flowType), layout, layoutSource: LAYOUT.source_file };
   }));
 
+  app.get("/api/sources", h(() => ({ materials: SOURCE_MATERIALS, principles: PRINCIPLE_MAPPINGS, excludedSheets: LAYOUT.excluded_sheets, unusedDiffs: UNUSED_SHEET_DIFFS })));
   app.get("/api/projects", h(() => service.store.data.projects.map((p) => ({ id: p.id, name: p.name, flowType: p.flowType, updatedAt: p.updatedAt, hasScript: !!service.store.scriptOf(p.id) }))));
   app.post("/api/projects", h((req) => service.createProject(req.body)));
   app.get("/api/projects/:id", h((req) => service.analysis(req.params.id)));
